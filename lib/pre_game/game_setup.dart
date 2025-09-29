@@ -54,8 +54,8 @@ class GameSetupScreenState extends State<GameSetupScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      
-    }Navigator.pop(context);
+      Navigator.pop(context);
+    }
   }
 
   @override
