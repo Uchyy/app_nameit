@@ -3,6 +3,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import './styles/main_button.dart';
+import './pre_game/game_setup.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,19 +29,19 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xFFEFF1ED),
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 132, 116, 160)),
       ),
-      home: const FallingLetters(),
+      home: const Nomino(),
     );
   }
 }
 
-class FallingLetters extends StatefulWidget {
-  const FallingLetters({super.key});
+class Nomino extends StatefulWidget {
+  const Nomino({super.key});
 
   @override
-  State<FallingLetters> createState() => _FallingLettersState();
+  State<Nomino> createState() => NominoState();
 }
 
-class _FallingLettersState extends State<FallingLetters> with TickerProviderStateMixin {
+class NominoState extends State<Nomino> with TickerProviderStateMixin {
 
  
   @override
@@ -93,7 +94,11 @@ class _FallingLettersState extends State<FallingLetters> with TickerProviderStat
             ElevatedButton(
               style: elevatedButtonStyle(),
               onPressed: () {
-                // Add your button action here
+                //Navigator.push(context, MaterialPageRoute(builder: (context) => const GameSetupScreen()));
+                Navigator.of(context).push(PageRouteBuilder(
+                  opaque: false,
+                  pageBuilder: (_, __, ___) => const GameSetupScreen(),
+                ));
               },
               child: const Text('PLAY'),
             ),
