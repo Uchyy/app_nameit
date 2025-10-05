@@ -55,19 +55,19 @@ class GameProvider extends ChangeNotifier {
   }
 
   Future<void> checkAnswers() async {
-  final results = await AnswerValidator.validate(_game);
-  final allValid = !results.values.contains(false);
-  final score = await AnswerValidator.calculateScore(_game);
+    final results = await AnswerValidator.validate(_game);
+    final allValid = !results.values.contains(false);
+    final score = await AnswerValidator.calculateScore(_game);
 
-  if (allValid) {
-    print("✅ All answers valid! Score: $score");
-  } else {
-    for (var entry in results.entries) {
-      if (!entry.value) {
-        print("❌ ${entry.key}: '${_game.answers[entry.key]}' is invalid");
+    if (allValid) {
+      print("✅ All answers valid! Score: $score");
+    } else {
+      for (var entry in results.entries) {
+        if (!entry.value) {
+          print("❌ ${entry.key}: '${_game.answers[entry.key]}' is invalid");
+        }
       }
+      print("Total Score: $score");
     }
-    print("Total Score: $score");
   }
-}
 }

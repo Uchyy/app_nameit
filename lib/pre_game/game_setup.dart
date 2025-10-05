@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:app_nameit/game_play/play_solo.dart';
 import 'package:app_nameit/misc/game_provider.dart';
 import 'package:app_nameit/misc/game_setup_container.dart';
+import 'package:app_nameit/misc/generate_game_code.dart';
 import 'package:app_nameit/pre_game/widgets/select_category.dart';
 import 'package:app_nameit/pre_game/widgets/select_char.dart';
 import 'package:app_nameit/pre_game/widgets/select_duration.dart';
@@ -81,6 +82,7 @@ class GameSetupScreenState extends State<GameSetupScreen> with SingleTickerProvi
   Widget build(BuildContext context) {
     final screenHeight = _getHeight();
     final game = context.watch<GameProvider>().game;
+    final gameCode = generateUniqueGameCode();
 
     return Align(
       alignment: Alignment.bottomCenter,

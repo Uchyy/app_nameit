@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "853507749033",
+    "project_id": "nomino-c8c6b",
+    "storage_bucket": "nomino-c8c6b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:853507749033:android:bf98038b4ec05ad8eea5b8",
+        "android_client_info": {
+          "package_name": "com.example.app_nameit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3JYOWu7Qne7NSetqwzyJe26jSWINsVLQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart'; // 👈 import provider
+import 'package:provider/provider.dart'; 
 
 import './styles/main_button.dart';
 import './pre_game/game_setup.dart';
-import './misc/game_provider.dart'; // 👈 your GameProvider file
+import './misc/game_provider.dart';
 
-void main() {
+import 'firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 👇 Initialize Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // 👇 Wrap with Provider after Firebase is ready
   runApp(
     ChangeNotifierProvider(
-      create: (_) => GameProvider(), // 👈 provide GameProvider globally
+      create: (_) => GameProvider(),
       child: const MyApp(),
     ),
   );

@@ -11,6 +11,8 @@ challenges.txt
 .history
 .svn/
 .swiftpm/
+.env.*
+.env
 migrate_working_dir/
 
 # IntelliJ related
@@ -44,3 +46,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Firebase & FlutterFire
+firebase.json
+.android/
+.ios/
+.mac/
+web/firebase-messaging-sw.js
