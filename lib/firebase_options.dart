@@ -42,17 +42,17 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyA58oGRM2YJAc00IqppSuJxheevekUnuZQ',
-    appId: '1:853507749033:web:802667df98967bcbeea5b8',
+    appId: '1:853507749033:web:a1e3a17af2291a66eea5b8',
     messagingSenderId: '853507749033',
     projectId: 'nomino-c8c6b',
     authDomain: 'nomino-c8c6b.firebaseapp.com',
     storageBucket: 'nomino-c8c6b.firebasestorage.app',
-    measurementId: 'G-3W27H9PHB3',
+    measurementId: 'G-77TQC12RGK',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB3JYOWu7Qne7NSetqwzyJe26jSWINsVLQ',
-    appId: '1:853507749033:android:bf98038b4ec05ad8eea5b8',
+    appId: '1:853507749033:android:48cf423b86259ef6eea5b8',
     messagingSenderId: '853507749033',
     projectId: 'nomino-c8c6b',
     storageBucket: 'nomino-c8c6b.firebasestorage.app',
@@ -60,16 +60,16 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBMsYcW8FxU2BYQ1CjInb8kNCGxjfizg1o',
-    appId: '1:853507749033:ios:61e894da4605390deea5b8',
+    appId: '1:853507749033:ios:29b2092f3ccc434eeea5b8',
     messagingSenderId: '853507749033',
     projectId: 'nomino-c8c6b',
     storageBucket: 'nomino-c8c6b.firebasestorage.app',
-    iosBundleId: 'com.example.appNameit',
+    iosBundleId: 'com.meshach.nomino',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyBMsYcW8FxU2BYQ1CjInb8kNCGxjfizg1o',
-    appId: '1:853507749033:ios:61e894da4605390deea5b8',
+    appId: '1:853507749033:ios:7675328854738823eea5b8',
     messagingSenderId: '853507749033',
     projectId: 'nomino-c8c6b',
     storageBucket: 'nomino-c8c6b.firebasestorage.app',
@@ -78,11 +78,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyA58oGRM2YJAc00IqppSuJxheevekUnuZQ',
-    appId: '1:853507749033:web:95ff03d28e71bb88eea5b8',
+    appId: '1:853507749033:web:775d8f181b8a2c64eea5b8',
     messagingSenderId: '853507749033',
     projectId: 'nomino-c8c6b',
     authDomain: 'nomino-c8c6b.firebaseapp.com',
     storageBucket: 'nomino-c8c6b.firebasestorage.app',
-    measurementId: 'G-9YQ9CX0Q5F',
+    measurementId: 'G-28F5C79EG0',
   );
 }

@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:853507749033:android:bf98038b4ec05ad8eea5b8",
+        "mobilesdk_app_id": "1:853507749033:android:48cf423b86259ef6eea5b8",
         "android_client_info": {
-          "package_name": "com.example.app_nameit"
+          "package_name": "com.meshach.nomino"
         }
       },
       "oauth_client": [],

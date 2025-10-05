@@ -13,18 +13,20 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // 👇 Initialize Firebase
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+  };
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return const SizedBox.shrink();
+  };
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+  options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  // 👇 Wrap with Provider after Firebase is ready
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => GameProvider(),
-      child: const MyApp(),
-    ),
+      ChangeNotifierProvider(
+        create: (_) => GameProvider(),
+        child: const MyApp(),
+      ),
   );
 }
 
@@ -42,6 +44,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, 
       title: 'Name IT',
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFEFF1ED),
