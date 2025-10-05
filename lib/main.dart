@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart'; // 👈 import provider
 
 import './styles/main_button.dart';
 import './pre_game/game_setup.dart';
+import './misc/game_provider.dart'; // 👈 your GameProvider file
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => GameProvider(), // 👈 provide GameProvider globally
+      child: const MyApp(),
+    ),
+  );
 }
 
 /* 
@@ -20,14 +27,15 @@ Color(0xFF766153) umber brown
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Name IT',
       theme: ThemeData(
-        scaffoldBackgroundColor: Color(0xFFEFF1ED),
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 132, 116, 160)),
+        scaffoldBackgroundColor: const Color(0xFFEFF1ED),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 132, 116, 160),
+        ),
       ),
       home: const Nomino(),
     );
@@ -42,12 +50,10 @@ class Nomino extends StatefulWidget {
 }
 
 class NominoState extends State<Nomino> with TickerProviderStateMixin {
-
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFEFF1ED),
+      backgroundColor: const Color(0xFFEFF1ED),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -59,9 +65,9 @@ class NominoState extends State<Nomino> with TickerProviderStateMixin {
                 Text(
                   'nomino',
                   style: TextStyle(
-                    fontSize: 60.0, 
+                    fontSize: 60.0,
                     fontFamily: GoogleFonts.modak().fontFamily,
-                    color: Color(0xFF717744),
+                    color: const Color(0xFF717744),
                     letterSpacing: 2.0,
                   ),
                   textAlign: TextAlign.left,
@@ -70,23 +76,19 @@ class NominoState extends State<Nomino> with TickerProviderStateMixin {
                   style: TextStyle(
                     fontSize: 40.0,
                     fontFamily: GoogleFonts.dancingScript().fontFamily,
-                    color: Color(0xFF373D20),
+                    color: const Color(0xFF373D20),
                   ),
                   child: AnimatedTextKit(
                     animatedTexts: [
-                    TyperAnimatedText('a song'),
-                    TyperAnimatedText('a food'),
-                    TyperAnimatedText('a movie'),
-                    TyperAnimatedText('a name'),
-                  ],
+                      TyperAnimatedText('a song'),
+                      TyperAnimatedText('a food'),
+                      TyperAnimatedText('a movie'),
+                      TyperAnimatedText('a name'),
+                    ],
                     isRepeatingAnimation: false,
                     totalRepeatCount: 4,
-                    onTap: () {
-                      print("Tap Event");
-                    },
                   ),
-                )
-
+                ),
               ],
             ),
 
@@ -94,7 +96,6 @@ class NominoState extends State<Nomino> with TickerProviderStateMixin {
             ElevatedButton(
               style: elevatedButtonStyle(),
               onPressed: () {
-                //Navigator.push(context, MaterialPageRoute(builder: (context) => const GameSetupScreen()));
                 Navigator.of(context).push(PageRouteBuilder(
                   opaque: false,
                   pageBuilder: (_, __, ___) => const GameSetupScreen(),
@@ -113,10 +114,7 @@ class NominoState extends State<Nomino> with TickerProviderStateMixin {
             ),
           ],
         ),
-      )
+      ),
     );
   }
-
-
-  
 }

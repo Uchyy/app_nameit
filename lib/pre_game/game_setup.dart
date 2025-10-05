@@ -1,12 +1,18 @@
 import 'dart:ffi';
 import 'dart:ui';
 
+import 'package:app_nameit/game_play/play_solo.dart';
+import 'package:app_nameit/misc/game_provider.dart';
+import 'package:app_nameit/misc/game_setup_container.dart';
+import 'package:app_nameit/pre_game/widgets/select_category.dart';
+import 'package:app_nameit/pre_game/widgets/select_char.dart';
+import 'package:app_nameit/pre_game/widgets/select_duration.dart';
+import 'package:app_nameit/pre_game/widgets/select_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
-import 'category_list.dart';
 import '../theme/colors.dart';
-import '../main.dart';
 
 class GameSetupScreen extends StatefulWidget{
   const GameSetupScreen({super.key});
@@ -16,18 +22,13 @@ class GameSetupScreen extends StatefulWidget{
   
 }
 
-class GameSetupScreenState extends State<GameSetupScreen> {
+class GameSetupScreenState extends State<GameSetupScreen> with SingleTickerProviderStateMixin  {
 
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
   List <GameModel> gameSetupWidgets = [];
 
-  void _onPageChanged(int index) {
-    setState(() {
-      _currentPage = index;
-    });
-  }
   @override
   void dispose() {
     _pageController.dispose();
@@ -35,12 +36,17 @@ class GameSetupScreenState extends State<GameSetupScreen> {
   }
 
   void _nextPage() {
-    if (_currentPage < 2) {
+    if (_currentPage < 3) {
       _currentPage++;
       _pageController.animateToPage(
         _currentPage,
         duration: Duration(milliseconds: 300),
         curve: Curves.easeInOut,
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const GamePlayScreen()),
       );
     }
   }
@@ -58,15 +64,33 @@ class GameSetupScreenState extends State<GameSetupScreen> {
     }
   }
 
+  double _getHeight() {
+    final screenHeight = MediaQuery.of(context).size.height;
+    switch (_currentPage) {
+      case 1: // duration page
+        return screenHeight * 0.43;
+      case 3: // categories page
+        return screenHeight * 0.75;
+      default:
+        return screenHeight * 0.5;
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
+    final screenHeight = _getHeight();
+    final game = context.watch<GameProvider>().game;
 
-        return Align(
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: ClipRect( // 👈 prevents overflow flash
+        child: AnimatedSize(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
           alignment: Alignment.bottomCenter,
           child: SizedBox(
-            height: screenHeight * 0.5,
-            
+            height: screenHeight,
             child: Column(
               children: [
                 // Custom header at bottom
@@ -75,8 +99,8 @@ class GameSetupScreenState extends State<GameSetupScreen> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_back, size: 30,),
-                        onPressed:  _previousPage
+                        icon: const Icon(Icons.arrow_back, size: 30),
+                        onPressed: _previousPage,
                       ),
                       const Spacer(),
                     ],
@@ -87,11 +111,31 @@ class GameSetupScreenState extends State<GameSetupScreen> {
                 Expanded(
                   child: PageView(
                     controller: _pageController,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
+                    onPageChanged: (index) {
+                      setState(() => _currentPage = index);
+                    },
                     children: [
-                      Container(color: Colors.blue[100], child: Center(child: Text("Page 1"))),
-                      Container(color: Colors.green[100], child: Center(child: Text("Page 2"))),
-                      Container(color: Colors.orange[100], child: Center(child: Text("Page 3"))),
+                      GameSetupContainer(
+                        borderColor: const Color.fromARGB(255, 139, 196, 243),
+                        title: "SELECT MODE",
+                        child: SelectGameMode(onNext: _nextPage),
+                      ),
+                      GameSetupContainer(
+                        borderColor: const Color.fromARGB(255, 249, 150, 180),
+                        title: "SELECT DURATION",
+                        child: SelectDuration(),
+                      ),
+                      GameSetupContainer(
+                        borderColor: const Color.fromARGB(255, 153, 140, 80),
+                        title: "SELECT CHARACTER",
+                        child: SelectChar(),
+                      ),
+                      GameSetupContainer(
+                        borderColor: const Color.fromARGB(255, 153, 140, 80),
+                        title: "SELECT CATEGORIES",
+                        child: SelectCategories(),
+                      ),
                     ],
                   ),
                 ),
@@ -99,29 +143,33 @@ class GameSetupScreenState extends State<GameSetupScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _currentPage  == gameSetupWidgets.length - 1
-                    ? SizedBox.shrink()
-                    : Spacer(),
-                      TextButton(
-                        onPressed: _nextPage, 
-                        child: 
-                          Text("Next", style: TextStyle(
-                            fontFamily: GoogleFonts.lato().fontFamily, 
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: AppColors.primaryVariant),
-                          )
+                    _currentPage == gameSetupWidgets.length - 1
+                        ? const SizedBox.shrink()
+                        : const Spacer(),
+                    TextButton(
+                      onPressed: _nextPage,
+                      child: Text(
+                        "Next   ",
+                        style: TextStyle(
+                          fontFamily: GoogleFonts.lato().fontFamily,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 25,
+                          color: AppColors.primaryVariant,
+                        ),
                       ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 40,)
+                const SizedBox(height: 40),
               ],
             ),
           ),
-        );
-    }
-    
+        ),
+      )
+    );
   }
+    
+}
 
 class GameModel  {
   final String title;
