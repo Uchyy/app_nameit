@@ -9,7 +9,7 @@ class Game {
   //List<String> multiplayer; 
 
   Game({
-    this.mode = "",
+    this.mode = "solo",
     this.duration = 5,
     this.categories = const [],
     this.selectedChar = "N",

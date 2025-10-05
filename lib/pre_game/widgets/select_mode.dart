@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:app_nameit/misc/game_provider.dart';
 import 'package:app_nameit/styles/sub_button.dart';
 import 'package:flutter/material.dart';

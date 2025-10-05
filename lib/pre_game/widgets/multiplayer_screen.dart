@@ -15,7 +15,7 @@ class _MultiplayerChoiceState extends State<MultiplayerChoice> {
   @override
   Widget build(BuildContext context) {
     const borderColor = Color.fromARGB(255, 153, 140, 80);
-    final screenWidth = MediaQuery.of(context).size.width * 0.7;
+    final screenWidth = MediaQuery.of(context).size.width * 0.6;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

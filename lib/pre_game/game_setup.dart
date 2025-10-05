@@ -1,20 +1,16 @@
-import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:app_nameit/game_play/play_solo.dart';
 import 'package:app_nameit/misc/game_provider.dart';
 import 'package:app_nameit/misc/game_setup_container.dart';
-import 'package:app_nameit/misc/generate_game_code.dart';
+//import 'package:app_nameit/misc/generate_game_code.dart';
 import 'package:app_nameit/pre_game/widgets/multiplayer_screen.dart';
 import 'package:app_nameit/pre_game/widgets/select_category.dart';
 import 'package:app_nameit/pre_game/widgets/select_char.dart';
 import 'package:app_nameit/pre_game/widgets/select_duration.dart';
 import 'package:app_nameit/pre_game/widgets/select_mode.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
-import '../theme/colors.dart';
 
 class GameSetupScreen extends StatefulWidget{
   const GameSetupScreen({super.key});
@@ -38,7 +34,8 @@ class GameSetupScreenState extends State<GameSetupScreen> with SingleTickerProvi
   }
 
   void _nextPage() {
-final mode = Provider.of<GameProvider>(context, listen: false).game.mode.toLowerCase();
+    final game = Provider.of<GameProvider>(context, listen: false).game;
+    final mode = game.mode.toLowerCase();
     final totalPages = (mode == "multiplayer") ? 4 : 3;
 
     if (_currentPage < totalPages) {
@@ -51,7 +48,7 @@ final mode = Provider.of<GameProvider>(context, listen: false).game.mode.toLower
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const GamePlayScreen()),
+        MaterialPageRoute(builder: (context) => GamePlayScreen(minutes: game.duration,)),
       );
     }
   }
@@ -76,22 +73,22 @@ final mode = Provider.of<GameProvider>(context, listen: false).game.mode.toLower
     final lastPage = totalPages - 1;
 
     if (_currentPage == lastPage) {
-      return screenHeight * 0.75;
+      return screenHeight * 0.95;
     }
 
     if (_currentPage == 1 && mode == "multiplayer") {
-      return screenHeight * 0.5;
+      return screenHeight * 0.58;
     }
 
     if (_currentPage == 2 && mode == "multiplayer") {
-      return screenHeight * 0.43;
+      return screenHeight * 0.53;
     }
 
     if (_currentPage == 1 && mode != "multiplayer") {
-      return screenHeight * 0.43;
+      return screenHeight * 0.53;
     }
 
-    return screenHeight * 0.5;
+    return screenHeight * 0.58;
   }
 
 
@@ -100,7 +97,7 @@ final mode = Provider.of<GameProvider>(context, listen: false).game.mode.toLower
   Widget build(BuildContext context) {
     final screenHeight = _getHeight();
     final mode = context.watch<GameProvider>().game.mode;
-    final gameCode = generateUniqueGameCode();
+    //final gameCode = generateUniqueGameCode();
 
     return Align(
       alignment: Alignment.bottomCenter,

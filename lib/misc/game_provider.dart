@@ -54,7 +54,7 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> checkAnswers() async {
+  Future<int> checkAnswers() async {
     final results = await AnswerValidator.validate(_game);
     final allValid = !results.values.contains(false);
     final score = await AnswerValidator.calculateScore(_game);
@@ -69,5 +69,7 @@ class GameProvider extends ChangeNotifier {
       }
       print("Total Score: $score");
     }
+
+    return score;
   }
 }
