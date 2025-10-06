@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:app_nameit/misc/game_provider.dart';
+import 'package:app_nameit/helpers/game_provider.dart';
 import 'package:app_nameit/styles/sub_button.dart';
 import 'package:app_nameit/theme/colors.dart';
 import 'package:flutter/material.dart';

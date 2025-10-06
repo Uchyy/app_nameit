@@ -2,7 +2,7 @@ import 'package:app_nameit/game_play/validation_screen.dart';
 import 'package:app_nameit/main.dart';
 import 'package:app_nameit/misc/curved_button.dart';
 import 'package:app_nameit/misc/custom_keyboard.dart';
-import 'package:app_nameit/misc/game_provider.dart';
+import 'package:app_nameit/helpers/game_provider.dart';
 import 'package:app_nameit/model/categories.dart';
 import 'package:app_nameit/theme/colors.dart';
 import 'package:flutter/material.dart';

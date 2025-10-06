@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:app_nameit/game_play/play_solo.dart';
 import 'package:app_nameit/main.dart';
-import 'package:app_nameit/misc/game_provider.dart';
+import 'package:app_nameit/helpers/game_provider.dart';
 import 'package:app_nameit/misc/game_setup_container.dart';
 //import 'package:app_nameit/misc/generate_game_code.dart';
 import 'package:app_nameit/pre_game/widgets/multiplayer_screen.dart';

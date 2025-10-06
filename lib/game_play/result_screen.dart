@@ -3,8 +3,8 @@ import 'package:app_nameit/misc/curved_button.dart';
 import 'package:app_nameit/pre_game/game_setup.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app_nameit/misc/game_provider.dart';
-import 'package:app_nameit/misc/validate_answers.dart';
+import 'package:app_nameit/helpers/game_provider.dart';
+import 'package:app_nameit/helpers/validate_answers.dart';
 import 'package:app_nameit/model/result.dart';
 import 'package:provider/provider.dart';
 

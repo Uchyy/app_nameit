@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import './styles/main_button.dart';
 import './pre_game/game_setup.dart';
-import './misc/game_provider.dart';
+import 'helpers/game_provider.dart';
 
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
