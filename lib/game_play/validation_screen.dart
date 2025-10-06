@@ -1,8 +1,5 @@
 import 'package:app_nameit/game_play/result_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:app_nameit/misc/game_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:app_nameit/misc/validate_answers.dart';
 
 class ValidationScreen extends StatefulWidget {
   const ValidationScreen({super.key});
@@ -22,8 +19,6 @@ class _ValidationScreenState extends State<ValidationScreen> {
   }
 
   Future<void> _runValidation() async {
-    final provider = context.read<GameProvider>();
-
     // Step 1
     setState(() {
       _progress = 0.3;

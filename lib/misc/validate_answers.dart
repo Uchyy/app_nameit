@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:app_nameit/model/game_vars.dart';
 import 'package:app_nameit/model/result.dart';
