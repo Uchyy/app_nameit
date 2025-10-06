@@ -38,10 +38,6 @@ class _ValidationScreenState extends State<ValidationScreen> {
     });
     await Future.delayed(const Duration(seconds: 1));
 
-    // Actual validation logic
-    final results = await AnswerValidator.validate(provider.game);
-    final score = await AnswerValidator.calculateScore(provider.game);
-
     // Step 3
     setState(() {
       _progress = 1.0;
@@ -52,11 +48,9 @@ class _ValidationScreenState extends State<ValidationScreen> {
 
     // Navigate to results page
     if (!mounted) return;
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => ResultScreen(results: results, score: score),
-      ),
+      MaterialPageRoute(builder: (_) => const ResultsScreen()),
     );
   }
 

@@ -44,32 +44,34 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
  */ 
-  void setAnswer(String category, String answer) {
-  _game.answers = Map.from(_game.answers)..[category] = answer;
-  notifyListeners();
-}
+  void setAnswers(Map<String, String> answers) {
+    _game.answers = Map<String, String>.from(answers);
+    notifyListeners();
+  }
 
   void resetGame() {
     _game = Game();
     notifyListeners();
   }
 
-  Future<int> checkAnswers() async {
-    final results = await AnswerValidator.validate(_game);
-    final allValid = !results.values.contains(false);
-    final score = await AnswerValidator.calculateScore(_game);
+  Future<void> checkAnswers() async {
+    final results = await AnswerValidator.scoreAnswers(_game);
+    final total = results.getTotal();
 
-    if (allValid) {
-      print("✅ All answers valid! Score: $score");
-    } else {
-      for (var entry in results.entries) {
-        if (!entry.value) {
-          print("❌ ${entry.key}: '${_game.answers[entry.key]}' is invalid");
-        }
-      }
-      print("Total Score: $score");
-    }
-
-    return score;
   }
+
+  /// Optional helper to classify result text
+  String scoreToTextDetailed(double total, int totalQs) {
+    if (totalQs <= 0) return "No questions";
+    final r = (total / totalQs).clamp(0.0, 1.0);
+
+    if (r == 0.0)   return "No valid answers";
+    if (r < 0.30)   return "Poor";
+    if (r < 0.60)   return "Fair";
+    if (r < 0.75)   return "Average";
+    if (r < 0.90)   return "Good";
+    return "Excellent";
+  }
+
+
 }

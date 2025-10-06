@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart'; 
 
@@ -22,6 +23,11 @@ void main() async {
   await Firebase.initializeApp(
   options: DefaultFirebaseOptions.currentPlatform,
   );
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   runApp(
       ChangeNotifierProvider(
         create: (_) => GameProvider(),
@@ -100,8 +106,8 @@ class NominoState extends State<Nomino> with TickerProviderStateMixin {
                       TyperAnimatedText('a movie'),
                       TyperAnimatedText('a name'),
                     ],
-                    isRepeatingAnimation: false,
-                    totalRepeatCount: 4,
+                    isRepeatingAnimation: true,
+                    //totalRepeatCount: 4,
                   ),
                 ),
               ],

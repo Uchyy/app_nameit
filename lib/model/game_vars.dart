@@ -10,10 +10,20 @@ class Game {
 
   Game({
     this.mode = "solo",
-    this.duration = 5,
+    this.duration = 3,
     this.categories = const [],
     this.selectedChar = "N",
-     this.answers = const {},
+    this.answers = const {},
     //this.multiplayer = const [],
   });
+
+  @override
+  String toString() {
+    return 'Mode: $mode,\n'
+          'Duration: $duration,\n'
+          'Categories: ${categories.map((c) => c.name).toList()},\n'
+          'SelectedChar: $selectedChar,\n'
+          'Answers: ${answers.toString()}';
+  }
+
 }

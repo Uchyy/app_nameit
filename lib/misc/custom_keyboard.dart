@@ -19,6 +19,19 @@ class CustomKeyboard extends StatelessWidget {
     }
   }
 
+  void _handleSpace() {
+    final focused = FocusManager.instance.primaryFocus;
+    if (focused != null) {
+      final element = focused.context;
+      if (element != null) {
+        final editable = element.findAncestorWidgetOfExactType<EditableText>();
+        if (editable != null) {
+          editable.controller.text += " " ;
+        }
+      }
+    }
+  }
+
   void _handleBackspace() {
     final focused = FocusManager.instance.primaryFocus;
     if (focused != null) {
@@ -52,21 +65,24 @@ class CustomKeyboard extends StatelessWidget {
 
     return Container(
       color: Colors.grey.shade200,
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(5),
       child: Column(
         children: [
-          for (var row in keys)
+          for (var row in keys) 
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: row.map((letter) {
                 return _buildKey(letter, () => _handleKeyPress(letter));
               }).toList(),
             ),
+          const SizedBox(height: 3,),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildKey("Enter", _handleEnter, flex: 2),
-              const SizedBox(width: 8),
+              _buildKey("¬", _handleEnter, flex:1),
+              const SizedBox(width: 3),
+              _buildKey("Space", _handleSpace, flex: 2),
+              const SizedBox(width: 3),
               _buildKey("⌫", _handleBackspace, flex: 1),
             ],
           ),
