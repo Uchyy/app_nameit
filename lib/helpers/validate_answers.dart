@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:app_nameit/model/game_vars.dart';
 import 'package:app_nameit/model/result.dart';
@@ -74,28 +77,50 @@ class AnswerValidator {
 
   /// Category-specific checks → returns 0.0 or 0.5
   static Future<double> _scoreByCategory(String category, String answer) async {
+    double score = 0;
+    
     switch (category.toLowerCase()) {
+
       case 'animal':
-        return await _isAnimal(answer) ? 0.5 : 0.0;
+        await _isAnimal(answer) ? 0.5 : 0.0;
+        break;
       case 'country':
-        return await _isCountry(answer) ? 0.5 : 0.0;
+        await _isCountry(answer) ? 0.5 : 0.0;
+        break;
+      case 'thing':
+        if (await _wordExists(answer)) score += 1.0;
+        break;
       case 'food':
-        return await _isFood(answer) ? 0.5 : 0.0;
+        await _isFood(answer) ? 0.5 : 0.0;
+        break;
       case 'movie':
-        return await _isMovie(answer) ? 0.5 : 0.0;
+        await _isMovie(answer) ? 0.5 : 0.0;
+        break;
       default:
-        return 0.5;
+        break;
     }
+    
+    return score;    
   }
 
   // ===== Optional category APIs =====
+
   static Future<bool> _isAnimal(String name) async {
+    final q = name.trim();
+    final ninjasKey = String.fromEnvironment('NINJAS_API');
+
+    if (q.isEmpty || ninjasKey.isEmpty) return false;
+
+    final uri = Uri.https('api.api-ninjas.com', '/v1/animals', {'name': q});
     try {
-      final res = await http.get(
-        Uri.parse('https://api.api-ninjas.com/v1/animals?name=$name'),
-        headers: {'X-Api-Key': 'YOUR_API_KEY'},
-      );
-      return res.statusCode == 200 && res.body.isNotEmpty && res.body != '[]';
+      debugPrint("CHECKING ANIMAL API");
+      final res = await http
+          .get(uri, headers: {'X-Api-Key': ninjasKey})
+          .timeout(const Duration(seconds: 6));
+      if (res.statusCode != 200) return false;
+
+      final data = jsonDecode(res.body);
+      return data is List && data.isNotEmpty;
     } catch (_) {
       return false;
     }
@@ -129,3 +154,20 @@ class AnswerValidator {
     }
   }
 }
+
+
+/*
+    GameCategory(name: "animal",  isSelected: true),
+    GameCategory(name: "place", isSelected: true),  
+    GameCategory(name: "thing",  isSelected: true),
+    GameCategory(name: "food",  isSelected: true),
+    GameCategory(name: "song"),
+    GameCategory(name: "movies/shows"),
+    GameCategory(name: "holidays"),
+    GameCategory(name: "brands"),
+    GameCategory(name: "emotion"),
+    GameCategory(name: "colour", isSelected: true),
+    GameCategory(name: "profession"),
+    GameCategory(name: "body part"),
+    GameCategory(name: "name", isSelected: true), 
+*/
