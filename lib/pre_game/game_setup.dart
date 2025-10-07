@@ -10,6 +10,7 @@ import 'package:app_nameit/pre_game/widgets/select_category.dart';
 import 'package:app_nameit/pre_game/widgets/select_char.dart';
 import 'package:app_nameit/pre_game/widgets/select_duration.dart';
 import 'package:app_nameit/pre_game/widgets/select_mode.dart';
+import 'package:app_nameit/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -132,7 +133,7 @@ class GameSetupScreenState extends State<GameSetupScreen> with SingleTickerProvi
                       child: Row(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.arrow_back, size: 30, color: Color.fromARGB(255, 236, 183, 10)),
+                            icon: const Icon(Icons.arrow_back, size: 35, color: Color.fromARGB(255, 227, 100, 100)),
                             onPressed: _previousPage,
                           ),
                           const Spacer(),
@@ -181,19 +182,17 @@ class GameSetupScreenState extends State<GameSetupScreen> with SingleTickerProvi
                     ),
 
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                      child: Row(
-                        children: [
-                          const Spacer(),
-                          IconButton(
-                            icon: const Icon(Icons.arrow_forward, size: 30, color: Color.fromARGB(255, 236, 183, 10)),
-                            onPressed: _nextPage,
-                          ),
-                        ],
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0,),
+                      child: Center(
+                        child: IconButton(
+                          alignment: Alignment.center,
+                          icon: const Icon(Icons.arrow_forward, size: 35, color:  Color.fromARGB(255, 164, 72, 235)),
+                          onPressed: _nextPage,
+                        ),
                       ),
                     ),
 
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 50),
                   ],
                 ),
               ),

@@ -52,8 +52,21 @@ class CustomKeyboard extends StatelessWidget {
     final focused = FocusManager.instance.primaryFocus;
     if (focused != null) {
       FocusScope.of(focused.context!).nextFocus();
+      // 👇 bring the newly focused field into view
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final ctx = FocusManager.instance.primaryFocus?.context;
+        if (ctx != null) {
+          Scrollable.ensureVisible(
+            ctx,
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeInOut,
+            alignment: 0.1,
+          );
+        }
+      });
     }
-  }
+}
+
 
   @override
   Widget build(BuildContext ctx) {

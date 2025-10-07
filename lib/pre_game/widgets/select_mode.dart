@@ -15,34 +15,36 @@ class SelectGameModeState extends State<SelectGameMode> {
   @override
   Widget build(BuildContext context) {
     
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        ElevatedButton(
-          style: subelevatedButtonStyle(),
-          onPressed: () => {
-            context.read<GameProvider>().setMode("solo"),
-            widget.onNext()
-          }, 
-          child: const Text(
-            "SOLO",
-            style: TextStyle(fontSize: 18), // 👈 overrides just for this button
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          ElevatedButton(
+            style: subelevatedButtonStyle(),
+            onPressed: () => {
+              context.read<GameProvider>().setMode("solo"),
+              widget.onNext()
+            }, 
+            child: const Text(
+              "SOLO",
+              style: TextStyle(fontSize: 18), // 👈 overrides just for this button
+            ),
           ),
-        ),
 
-        const SizedBox(height: 15,),
-        ElevatedButton(
-          style: subelevatedButtonStyle(),
-          onPressed: () => {
-            context.read<GameProvider>().setMode("multiplayer"),
-            widget.onNext()
-          }, 
-          child: const Text(
-            "MULTIPLAYER",
-            style: TextStyle(fontSize: 18), // 👈 overrides just for this button
-          ),
-        )
-      ],
+          const SizedBox(height: 15,),
+          ElevatedButton(
+            style: subelevatedButtonStyle(),
+            onPressed: () => {
+              context.read<GameProvider>().setMode("multiplayer"),
+              widget.onNext()
+            }, 
+            child: const Text(
+              "MULTIPLAYER",
+              style: TextStyle(fontSize: 18), // 👈 overrides just for this button
+            ),
+          )
+        ],
+      ),
     );
   }
 

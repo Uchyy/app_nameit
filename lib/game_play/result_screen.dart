@@ -231,6 +231,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
               provider.resetGame();
             },
           ),
+          const SizedBox(height: 40,)
         ],
       ),
     );

@@ -22,6 +22,8 @@ class GamePlayScreen extends StatefulWidget {
 class _GamePlayScreenState extends State<GamePlayScreen> {
   late List<FocusNode> _focusNodes;
   late List<TextEditingController> _controllers;
+  final _scrollController = ScrollController();
+
   late DateTime _endTime;
   bool _warn = false;
 
@@ -32,6 +34,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     _focusNodes = List.generate(selectedCategories.length, (_) => FocusNode());
     _controllers = List.generate(selectedCategories.length, (_) => TextEditingController());
     _endTime = DateTime.now().add(Duration(minutes: widget.minutes));
+
+    _revealFocused();
     
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNodes.first.requestFocus();
@@ -148,26 +152,35 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(7),
-                  child: Column(
-                    children: categories.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final cat = entry.value;
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: Column(
+                      children: categories.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final cat = entry.value;
 
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5.0),
-                        child: TextField(
-                          controller: _controllers[index],
-                          focusNode: _focusNodes[index],
-                          showCursor: true,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            labelText: cat.name,
-                            prefixIcon: Icon(getIconForCategory(cat.name)),
-                            border: const OutlineInputBorder(),
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                          child: Focus(
+                            onFocusChange: (hasFocus) { if (hasFocus) _revealFocused(); },
+                            child: TextField(
+                              controller: _controllers[index],
+                              focusNode: _focusNodes[index],
+                              showCursor: true,
+                              readOnly: true, // using custom keyboard
+                              decoration: InputDecoration(
+                                labelText: cat.name,
+                                prefixIcon: Icon(getIconForCategory(cat.name)),
+                                border: const OutlineInputBorder(),
+                              ),
+                              onTap: _revealFocused, // optional, feels nice
+                              textInputAction: TextInputAction.next,
+                            ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      }).toList(),
+                    )
+
                   )
                 ),
               ),
@@ -212,13 +225,13 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         alignment: Alignment.center,
         title: const Center(
           child: Text(
-            "Exit Game?",
+            "Are you sure?",
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         content: const Text(
-          "Your progress will be lost.",
+          "You will lose all progress.",
           textAlign: TextAlign.center,
         ),
         actionsAlignment: MainAxisAlignment.center, // 👈 centers buttons
@@ -243,6 +256,20 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         ),
       ),
     ) ?? false;
+  }
+
+  void _revealFocused() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ctx = FocusManager.instance.primaryFocus?.context;
+      if (ctx != null) {
+        Scrollable.ensureVisible(
+          ctx,
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeInOut,
+          alignment: 0.1, // keep a bit of space above
+        );
+      }
+    });
   }
 
 }

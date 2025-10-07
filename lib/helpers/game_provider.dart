@@ -49,7 +49,7 @@ class GameProvider extends ChangeNotifier {
   }
 
   void resetGame() {
-    _game = Game();
+    _game = Game(categories: getCategories());    
     notifyListeners();
   }
 }
