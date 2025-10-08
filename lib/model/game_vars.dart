@@ -5,7 +5,7 @@ class Game {
   int duration;
   List<GameCategory> categories;
   String selectedChar;
-   Map<String, String> answers; 
+  Map<String, String> answers; 
   //List<String> multiplayer; 
 
   Game({
@@ -19,11 +19,11 @@ class Game {
 
   @override
   String toString() {
-    return 'Mode: $mode,\n'
-          'Duration: $duration,\n'
-          'Categories: ${categories.map((c) => c.name).toList()},\n'
-          'SelectedChar: $selectedChar,\n'
-          'Answers: ${answers.toString()}';
+    return 'mode: $mode,\n'
+          'duration: $duration,\n'
+          'categories: ${categories.map((c) => c.name).toList()},\n'
+          'selectedChar: $selectedChar,\n'
+          'answers: ${answers.toString()}';
   }
 
 }
