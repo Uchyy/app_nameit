@@ -5,7 +5,8 @@ class FirestoreGame {
   final String createdBy; // uid of creator
   final DateTime createdOn;
   final bool hasStarted;
-  final Char selectedChar;
+  final bool hasEnded;
+  final String selectedChar;
   final int duration;
   final List<String> playerIds;
   final List<String> selectedCategories;
@@ -18,6 +19,7 @@ class FirestoreGame {
     required this.selectedChar,
     required this.duration,
     this.hasStarted = false,
+    this.hasEnded = false,
     this.playerIds = const [],
     this.selectedCategories = const [],
     this.scores = const {},
@@ -28,6 +30,7 @@ class FirestoreGame {
     'createdBy': createdBy,
     'createdOn': createdOn.toIso8601String(),
     'hasStarted': hasStarted,
+    'hasEnded': hasEnded,
     'selectedChar': selectedChar,
     'duration': duration,
     'playerIds': playerIds,
@@ -40,6 +43,7 @@ class FirestoreGame {
     createdBy: map['createdBy'],
     createdOn: DateTime.parse(map['createdOn']),
     hasStarted: map['hasStarted'] ?? false,
+    hasEnded: map['hasEnded'] ?? false,
     selectedChar: map['selectedChar'],
     duration: map['duration'],
     playerIds: List<String>.from(map['playerIds'] ?? []),

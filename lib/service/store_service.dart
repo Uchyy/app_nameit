@@ -1,11 +1,11 @@
 import 'package:app_nameit/model/games.dart';
 import 'package:app_nameit/model/multiplayer.dart';
 import 'package:app_nameit/model/solo.dart';
-import 'package:app_nameit/model/user.dart';
+import 'package:app_nameit/model/player.dart';
 
 abstract class StoreService {
   // ✅ User creation
-  Future<void> createUser(User user);
+  Future<void> createUser(Player user);
 
   // ✅ Game creation and retrieval
   Future<void> createGame(FirestoreGame game);
@@ -20,4 +20,7 @@ abstract class StoreService {
   // ✅ Solo + Multiplayer persistence
   Future<void> updateSolo(Solo solo, String uid);
   Future<void> updateMultiplayer(Multiplay multiplay, String uid);
+
+  //is the User the creator
+  Future <bool?>  isCreator(String creator); 
 }

@@ -1,3 +1,6 @@
+import 'package:app_nameit/game_play/waiting_room.dart';
+import 'package:app_nameit/misc/custom_snackbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class MultiplayerChoice extends StatefulWidget {
@@ -81,6 +84,26 @@ class _MultiplayerChoiceState extends State<MultiplayerChoice> {
                         borderSide: const BorderSide(color: borderColor),
                       ),
                     ),
+                    onChanged: (value) async {
+                      if (value.length == 6) {
+                        final code = value.trim().toUpperCase();
+                        final doc = await FirebaseFirestore.instance
+                            .collection('games')
+                            .doc(code)
+                            .get();
+
+                        if (doc.exists) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => WaitingRoom(gameCode: code),
+                            ),
+                          );
+                        } else {
+                          CustomSnackbar.show(context, title: "Code not found!", message: "Please create a game instead");
+                        }
+                      }
+                    } 
                   ),
                 ),
                 const SizedBox(width: 10),

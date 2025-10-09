@@ -1,16 +1,19 @@
 import 'dart:ui';
 
 import 'package:app_nameit/game_play/play_solo.dart';
+import 'package:app_nameit/game_play/waiting_room.dart';
+import 'package:app_nameit/helpers/generate_game_code.dart';
 import 'package:app_nameit/main.dart';
 import 'package:app_nameit/helpers/game_provider.dart';
 import 'package:app_nameit/misc/game_setup_container.dart';
-//import 'package:app_nameit/misc/generate_game_code.dart';
+import 'package:app_nameit/model/games.dart';
 import 'package:app_nameit/pre_game/widgets/multiplayer_screen.dart';
 import 'package:app_nameit/pre_game/widgets/select_category.dart';
 import 'package:app_nameit/pre_game/widgets/select_char.dart';
 import 'package:app_nameit/pre_game/widgets/select_duration.dart';
 import 'package:app_nameit/pre_game/widgets/select_mode.dart';
-import 'package:app_nameit/theme/colors.dart';
+import 'package:app_nameit/service/store_impl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +28,8 @@ class GameSetupScreen extends StatefulWidget{
 class GameSetupScreenState extends State<GameSetupScreen> with SingleTickerProviderStateMixin  {
 
   final PageController _pageController = PageController();
+  final storeService = StoreImpl();
+  final currentUser = FirebaseAuth.instance.currentUser;
   int _currentPage = 0;
 
   @override
@@ -33,7 +38,7 @@ class GameSetupScreenState extends State<GameSetupScreen> with SingleTickerProvi
     super.dispose();
   }
 
-  void _nextPage() {
+  Future<void> _nextPage() async {
     final game = Provider.of<GameProvider>(context, listen: false).game;
     final mode = game.mode.toLowerCase();
     final totalPages = (mode == "multiplayer") ? 4 : 3;
@@ -47,11 +52,46 @@ class GameSetupScreenState extends State<GameSetupScreen> with SingleTickerProvi
         curve: Curves.easeInOut,
       );
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => GamePlayScreen(minutes: game.duration,)),
-      );
+      if (game.mode == "solo") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GamePlayScreen(minutes: game.duration),
+          ),
+        );
+      } else {
+        debugPrint ("ENTEREING MUKTPLYAER MODE");
+        if (currentUser?.uid == null) return;
+        String code = await generateUniqueGameCode();
+        List<String> categories = Provider.of<GameProvider>(context, listen: false)
+          .game
+          .categories
+          .where((c) => c.isSelected)
+          .map((c) => c.name)
+          .toList();
+
+        String uid = currentUser!.uid;
+        
+        //Adding game to firstore
+        FirestoreGame firestoreGame = FirestoreGame(
+          code: code, 
+          createdBy: uid, 
+          createdOn: DateTime.now(), 
+          selectedChar: game.selectedChar , 
+          duration: game.duration,
+          selectedCategories: categories,
+        );
+        await storeService.createGame(firestoreGame);
+        await storeService.addPlayer(code, uid);
+
+        Navigator.push( context,
+          MaterialPageRoute(
+            builder: (context) => WaitingRoom(gameCode: code,),
+          ),
+        );
+      }
     }
+
   }
 
   void _previousPage() {
@@ -94,7 +134,6 @@ class GameSetupScreenState extends State<GameSetupScreen> with SingleTickerProvi
     }
     return screenHeight * 0.6;
   }
-
 
 
   @override
