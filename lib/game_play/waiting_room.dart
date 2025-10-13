@@ -1,3 +1,4 @@
+import 'package:app_nameit/game_play/multiplay_screen.dart';
 import 'package:app_nameit/game_play/solo_screen.dart';
 import 'package:app_nameit/helpers/game_provider.dart';
 import 'package:app_nameit/main.dart';
@@ -58,7 +59,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => SoloPlayScreen(),
+                      builder: (_) =>  PlayMultiplayerScreen(gameCode: widget.gameCode),
                     ),
                   );
                 }

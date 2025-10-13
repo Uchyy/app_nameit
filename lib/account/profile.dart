@@ -1,3 +1,4 @@
+import 'package:app_nameit/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,7 +10,16 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
 
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const Nomino()),
+        );
+      }, 
+      child: Scaffold(
       backgroundColor: const Color(0xFFEFF1ED),
       appBar: AppBar(
         backgroundColor: const Color(0xFF717744),
@@ -90,6 +100,7 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
         )      
-      );
-    }
+      )
+    );  
+  }
 }
