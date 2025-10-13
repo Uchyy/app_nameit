@@ -1,5 +1,10 @@
 // play_multiplayer.dart
+import 'dart:ffi';
+
 import 'package:app_nameit/misc/game_base.dart';
+import 'package:app_nameit/model/multiplayer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../model/games.dart';
 import '../service/store_impl.dart';
@@ -13,6 +18,7 @@ class PlayMultiplayerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _store = StoreImpl();
+    final _auth = FirebaseAuth.instance;
 
     return StreamBuilder<FirestoreGame?>(
       stream: _store.streamGame(gameCode),
@@ -29,8 +35,23 @@ class PlayMultiplayerScreen extends StatelessWidget {
           minutes: game.duration,
           categories: categories,
           onSubmit: (answers) async {
+            await _store.updateGameFields("answers.${_auth.currentUser!.uid}", answers, gameCode);
+            Multiplay multiplay = Multiplay(
+              totalScore: 0, 
+              answers: answers, 
+              gameCode: gameCode, 
+              markedBy: "", 
+              markedWho: ""
+            );
+
+            try {
+              _store.createMultiplayer(multiplay);
+              debugPrint("cCreating multiplay");
+            } on Exception catch (e) {
+              debugPrint("Error creating multiplay doc: $e");
+            }
+
             /*
-            await _store.updateGameFields("answers.${_store.currentUid()}", answers, gameCode);
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -44,7 +65,6 @@ class PlayMultiplayerScreen extends StatelessWidget {
             );
             */
           },
-          onReset: () {}, // Multiplayer may disable this
         );
       },
     );

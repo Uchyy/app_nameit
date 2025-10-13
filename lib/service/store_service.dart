@@ -13,8 +13,8 @@ abstract class StoreService {
   Stream<FirestoreGame?> streamGame(String code); // 👈 Live game updates
 
   // ✅ Solo + Multiplayer persistence
-  Future<void> createSolo(Solo solo, String uid);
-  Future<void> createMultiplayer(Multiplay multiplay, String uid);
+  Future<void> createSolo(Solo solo);
+  Future<void> createMultiplayer(Multiplay multiplay);
 
   //is the User the creator
   Future <bool?>  isCreator(String creator); 

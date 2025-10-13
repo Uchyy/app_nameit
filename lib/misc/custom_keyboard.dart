@@ -32,21 +32,26 @@ class CustomKeyboard extends StatelessWidget {
     }
   }
 
-  void _handleBackspace() {
-    final focused = FocusManager.instance.primaryFocus;
-    if (focused != null) {
-      final element = focused.context;
-      if (element != null) {
-        final editable = element.findAncestorWidgetOfExactType<EditableText>();
-        if (editable != null) {
-          final ctrl = editable.controller;
-          if (ctrl.text.isNotEmpty) {
-            ctrl.text = ctrl.text.substring(0, ctrl.text.length - 1);
-          }
+ void _handleBackspace() {
+  final focused = FocusManager.instance.primaryFocus;
+  if (focused != null) {
+    final element = focused.context;
+    if (element != null) {
+      final editable = element.findAncestorWidgetOfExactType<EditableText>();
+      if (editable != null) {
+        final ctrl = editable.controller;
+        final selection = ctrl.selection;
+        final cursorPos = selection.baseOffset;
+
+        if (cursorPos > 0) {
+          final newText = ctrl.text.replaceRange(cursorPos - 1, cursorPos, '');
+          ctrl.text = newText;
+          ctrl.selection = TextSelection.collapsed(offset: cursorPos - 1);
         }
       }
     }
   }
+}
 
   void _handleEnter() {
     final focused = FocusManager.instance.primaryFocus;
@@ -65,8 +70,7 @@ class CustomKeyboard extends StatelessWidget {
         }
       });
     }
-}
-
+  }
 
   @override
   Widget build(BuildContext ctx) {

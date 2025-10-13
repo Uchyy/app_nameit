@@ -15,7 +15,7 @@ class GamePlayBase extends StatefulWidget {
   final int minutes;
   final List<String> categories;
   final Function(Map<String, String>) onSubmit;
-  final VoidCallback onReset;
+  //final VoidCallback onReset;
 
   const GamePlayBase({
     super.key,
@@ -23,7 +23,7 @@ class GamePlayBase extends StatefulWidget {
     required this.minutes,
     required this.categories,
     required this.onSubmit,
-    required this.onReset,
+    //required this.onReset,
   });
 
   @override
@@ -49,6 +49,12 @@ class _GamePlayBaseState extends State<GamePlayBase> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNodes.first.requestFocus();
     });
+  }
+
+  void onReset() {
+    for (final c in _controllers) {
+      c.clear();
+    }
   }
 
   @override
@@ -165,7 +171,7 @@ class _GamePlayBaseState extends State<GamePlayBase> {
               CurvedButton(
                 leftLabel: "RESET",
                 rightLabel: "SUBMIT",
-                onLeftPressed: widget.onReset,
+                onLeftPressed: onReset,
                 onRightPressed: () {
                   final answers = <String, String>{};
                   for (int i = 0; i < widget.categories.length; i++) {

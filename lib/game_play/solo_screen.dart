@@ -33,9 +33,6 @@ class SoloPlayScreen extends StatelessWidget {
           ),
         );
       },
-      onReset: () {
-        context.read<GameProvider>().resetGame();
-      },
     );
   }
 }

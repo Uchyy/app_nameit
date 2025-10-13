@@ -49,7 +49,8 @@ class StoreImpl implements StoreService {
   }
 
   @override
-  Future<void> createSolo(Solo solo, String uid) async {
+  Future<void> createSolo(Solo solo) async {
+    final uid = getUserid();
     try {
       await _db.collection('users').doc(uid).collection('solo').add(solo.toMap());
       print("✅ Solo added for $uid");
@@ -60,7 +61,8 @@ class StoreImpl implements StoreService {
   }
 
   @override
-  Future<void> createMultiplayer(Multiplay multiplay, String uid) async {
+  Future<void> createMultiplayer(Multiplay multiplay) async {
+    final uid = getUserid();
     try {
       await _db
         .collection('users')

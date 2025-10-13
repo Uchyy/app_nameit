@@ -64,7 +64,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFEFF1ED),
       body: _loading
-        ? const CircularProgressIndicator()
+        ? const Center(child: CircularProgressIndicator(),)
         : _result == null
           ? const Center(child: Text("No results found"))
           : _buildResults(),
@@ -72,7 +72,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
   }
 
 
-  /// 2️Final Results View
+  /// Final Results View
   Widget _buildResults() {
     final result = _result!;
     final total = result.getTotal();
@@ -80,137 +80,141 @@ class _ResultsScreenState extends State<ResultsScreen> {
     final ratio = (total / totalQs).clamp(0.0, 1.0);
     final provider = context.read<GameProvider>();
 
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 20,),
-          Text(
-            "Your Score",
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              fontFamily: GoogleFonts.lato().fontFamily,
-              color: const Color(0xFF373D20),
-            ),
-          ),
-          const SizedBox(height: 15),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              SizedBox(
-                height: 120,
-                width: 120,
-                child: CircularProgressIndicator(
-                  value: ratio,
-                  strokeWidth: 10,
-                  backgroundColor: Colors.grey.shade300,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    ratio > 0.75
-                        ? Colors.green
-                        : (ratio > 0.5 ? Colors.orange : Colors.redAccent),
-                  ),
-                ),
+    return PopScope(
+      canPop: false,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 20,),
+            Text(
+              "Your Score",
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                fontFamily: GoogleFonts.lato().fontFamily,
+                color: const Color(0xFF373D20),
               ),
-              Text(
-                "${(ratio * 100).toStringAsFixed(0)}%",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: GoogleFonts.playfairDisplay().fontFamily,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            _remarkText,
-            style: TextStyle(
-              fontSize: 22,
-              fontFamily: GoogleFonts.comfortaa().fontFamily,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF717744),
             ),
-          ),
-          const SizedBox(height: 20),
-
-          // Category breakdown
-          Expanded(
-            child: ListView(
-              children: result.scores.entries.map((entry) {
-                final cat = entry.key;
-                final score = entry.value;
-                final remark = result.remarks[cat] ?? "";
-                final ans = result.answers[cat] ?? "";
-
-                return Card(
-                  color: Colors.white,
-                  margin: const EdgeInsets.symmetric(vertical: 6),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(
-                      color: score >= 1.0
+            const SizedBox(height: 15),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  height: 120,
+                  width: 120,
+                  child: CircularProgressIndicator(
+                    value: ratio,
+                    strokeWidth: 10,
+                    backgroundColor: Colors.grey.shade300,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      ratio > 0.75
                           ? Colors.green
-                          : (score >= 0.5 ? Colors.orange : Colors.redAccent),
-                      width: 2,
+                          : (ratio > 0.5 ? Colors.orange : Colors.redAccent),
                     ),
                   ),
-                  child: ListTile(
-                    title: Text(
-                      cat.toUpperCase(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: GoogleFonts.lato().fontFamily,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "$ans\n$remark",
-                      style: const TextStyle(height: 1.4),
-                    ),
-                    trailing: Text(
-                      "${(score * 100).toStringAsFixed(0)}%",
-                      style: TextStyle(
+                ),
+                Text(
+                  "${(ratio * 100).toStringAsFixed(0)}%",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: GoogleFonts.playfairDisplay().fontFamily,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              _remarkText,
+              style: TextStyle(
+                fontSize: 22,
+                fontFamily: GoogleFonts.comfortaa().fontFamily,
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFF717744),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Category breakdown
+            Expanded(
+              child: ListView(
+                children: result.scores.entries.map((entry) {
+                  final cat = entry.key;
+                  final score = entry.value;
+                  final remark = result.remarks[cat] ?? "";
+                  final ans = result.answers[cat] ?? "";
+
+                  return Card(
+                    color: Colors.white,
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
                         color: score >= 1.0
                             ? Colors.green
-                            : (score >= 0.5
-                                ? Colors.orange
-                                : Colors.redAccent),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                            : (score >= 0.5 ? Colors.orange : Colors.redAccent),
+                        width: 2,
                       ),
                     ),
-                    isThreeLine: true,
-                  ),
-                );
-              }).toList(),
+                    child: ListTile(
+                      title: Text(
+                        cat.toUpperCase(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontFamily: GoogleFonts.lato().fontFamily,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "$ans\n$remark",
+                        style: const TextStyle(height: 1.4),
+                      ),
+                      trailing: Text(
+                        "${(score * 100).toStringAsFixed(0)}%",
+                        style: TextStyle(
+                          color: score >= 1.0
+                              ? Colors.green
+                              : (score >= 0.5
+                                  ? Colors.orange
+                                  : Colors.redAccent),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      isThreeLine: true,
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
-          ),
 
-          // Button to replay
-          const SizedBox(height: 10),
-          CurvedButton(
-            leftLabel: "PLAY AGAIN",
-            rightLabel: "QUIT",
-            onLeftPressed: () {
-              Navigator.of(context).push(PageRouteBuilder(
-                opaque: false,
-                pageBuilder: (_, __, ___) => const GameSetupScreen(),
-              ));
-              provider.resetGame();
-            },
-            onRightPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const Nomino()),
-              );
-              provider.resetGame();
-            },
-          ),
-          const SizedBox(height: 40,)
-        ],
+            // Button to replay
+            const SizedBox(height: 10),
+            CurvedButton(
+              leftLabel: "PLAY AGAIN",
+              rightLabel: "QUIT",
+              onLeftPressed: () {
+                Navigator.of(context).push(PageRouteBuilder(
+                  opaque: false,
+                  pageBuilder: (_, __, ___) => const GameSetupScreen(),
+                ));
+                provider.resetGame();
+              },
+              onRightPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const Nomino()),
+                );
+                provider.resetGame();
+              },
+            ),
+            const SizedBox(height: 40,)
+          ],
+        ),
       ),
     );
+    
   }
 
   
