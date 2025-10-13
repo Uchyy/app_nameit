@@ -43,6 +43,12 @@ dependencies:
   change_app_package_name: ^1.5.0
   http: ^1.5.0
   firebase_auth: ^6.1.0
+  qr: ^3.0.2
+  qr_flutter: ^4.1.0
+  barcode: ^2.2.9
+  mobile_scanner: ^7.1.2
+  qr_code_scanner: ^1.0.1
+  qr_code_scanner_plus: ^2.0.12
 
 dev_dependencies:
   animated_text_kit: ^4.2.2

@@ -4,6 +4,7 @@ import 'package:app_nameit/model/solo.dart';
 import 'package:app_nameit/model/player.dart';
 
 abstract class StoreService {
+
   // ✅ User creation
   Future<void> createUser(Player user);
 
@@ -11,16 +12,13 @@ abstract class StoreService {
   Future<void> createGame(FirestoreGame game);
   Stream<FirestoreGame?> streamGame(String code); // 👈 Live game updates
 
-  // ✅ Player management
-  Future<void> addPlayer(String gameCode, String playerUid);
-
-  // ✅ Score updates
-  Future<void> updateScores(String gameCode, double score);
-
   // ✅ Solo + Multiplayer persistence
-  Future<void> updateSolo(Solo solo, String uid);
-  Future<void> updateMultiplayer(Multiplay multiplay, String uid);
+  Future<void> createSolo(Solo solo, String uid);
+  Future<void> createMultiplayer(Multiplay multiplay, String uid);
 
   //is the User the creator
   Future <bool?>  isCreator(String creator); 
+
+  Future <void> updateGameFields (String value, String field, String gameCode);
+  Future<bool> checkIfUserEmailExist(String email);
 }

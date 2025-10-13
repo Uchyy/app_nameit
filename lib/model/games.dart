@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 class FirestoreGame {
   final String code;

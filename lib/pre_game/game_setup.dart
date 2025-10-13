@@ -1,6 +1,8 @@
 import 'dart:ui';
 
-import 'package:app_nameit/game_play/play_solo.dart';
+import 'package:app_nameit/account/main.dart';
+import 'package:app_nameit/game_play/solo_screen.dart';
+import 'package:app_nameit/misc/page_loading.dart';
 import 'package:app_nameit/game_play/waiting_room.dart';
 import 'package:app_nameit/helpers/generate_game_code.dart';
 import 'package:app_nameit/main.dart';
@@ -13,6 +15,7 @@ import 'package:app_nameit/pre_game/widgets/select_char.dart';
 import 'package:app_nameit/pre_game/widgets/select_duration.dart';
 import 'package:app_nameit/pre_game/widgets/select_mode.dart';
 import 'package:app_nameit/service/store_impl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -54,14 +57,28 @@ class GameSetupScreenState extends State<GameSetupScreen> with SingleTickerProvi
     } else {
       if (game.mode == "solo") {
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => GamePlayScreen(minutes: game.duration),
-          ),
-        );
+            context,
+            MaterialPageRoute(builder: (_) => const PageLoading(
+              second: 'Creating game session...', 
+              third: 'Loading game.....', 
+              first: 'Finalizing......', 
+              nextPage: SoloPlayScreen(),  
+            )),
+          );
+
       } else {
         debugPrint ("ENTEREING MUKTPLYAER MODE");
-        if (currentUser?.uid == null) return;
+        if (currentUser?.uid == null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const PageLoading(
+              second: 'Validating user...', 
+              third: 'User not signed in', 
+              first: 'Rerouting', 
+              nextPage: AccountScreen(),  
+            )),
+          );
+        } 
         String code = await generateUniqueGameCode();
         List<String> categories = Provider.of<GameProvider>(context, listen: false)
           .game
@@ -82,11 +99,16 @@ class GameSetupScreenState extends State<GameSetupScreen> with SingleTickerProvi
           selectedCategories: categories,
         );
         await storeService.createGame(firestoreGame);
-        await storeService.addPlayer(code, uid);
-
-        Navigator.push( context,
+        await storeService.updateGameFields('playerIds', uid, code);
+        Navigator.push(
+          context,
           MaterialPageRoute(
-            builder: (context) => WaitingRoom(gameCode: code,),
+            builder: (_) => PageLoading(
+              first: "Creating game session...",
+              second: "Adding you to the game...",
+              third: "Loading waiting room...",
+              nextPage: WaitingRoom(gameCode: code),
+            ),
           ),
         );
       }

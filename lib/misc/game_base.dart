@@ -1,38 +1,47 @@
-import 'package:app_nameit/game_play/validation_screen.dart';
-import 'package:app_nameit/main.dart';
-import 'package:app_nameit/misc/curved_button.dart';
-import 'package:app_nameit/misc/custom_keyboard.dart';
+// game_play_base.dart
 import 'package:app_nameit/helpers/game_provider.dart';
+import 'package:app_nameit/main.dart';
 import 'package:app_nameit/model/categories.dart';
-import 'package:app_nameit/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-
 import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
+import 'package:provider/provider.dart';
+import '../misc/curved_button.dart';
+import '../misc/custom_keyboard.dart';
+import '../theme/colors.dart';
 
-class GamePlayScreen extends StatefulWidget {
+class GamePlayBase extends StatefulWidget {
+  final String letter;
   final int minutes;
-  const GamePlayScreen({super.key, required this.minutes});
+  final List<String> categories;
+  final Function(Map<String, String>) onSubmit;
+  final VoidCallback onReset;
+
+  const GamePlayBase({
+    super.key,
+    required this.letter,
+    required this.minutes,
+    required this.categories,
+    required this.onSubmit,
+    required this.onReset,
+  });
 
   @override
-  State<GamePlayScreen> createState() => _GamePlayScreenState();
+  State<GamePlayBase> createState() => _GamePlayBaseState();
 }
 
-class _GamePlayScreenState extends State<GamePlayScreen> {
-  late List<FocusNode> _focusNodes;
+class _GamePlayBaseState extends State<GamePlayBase> {
   late List<TextEditingController> _controllers;
   final _scrollController = ScrollController();
-
+  late List<FocusNode> _focusNodes;
   late DateTime _endTime;
   bool _warn = false;
 
   @override
   void initState() {
     super.initState();
-    final selectedCategories = context.read<GameProvider>().game.categories.where((c) => c.isSelected).toList();
-    _focusNodes = List.generate(selectedCategories.length, (_) => FocusNode());
-    _controllers = List.generate(selectedCategories.length, (_) => TextEditingController());
+    _controllers = List.generate(widget.categories.length, (_) => TextEditingController());
+    _focusNodes = List.generate(widget.categories.length, (_) => FocusNode());
     _endTime = DateTime.now().add(Duration(minutes: widget.minutes));
 
     _revealFocused();
@@ -42,34 +51,11 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     });
   }
 
-  Future<void> _onSubmit(BuildContext context) async {
-    final gameProvider = context.read<GameProvider>();
-    final game = gameProvider.game;
-    final categories = game.categories.where((c) => c.isSelected).toList();
-
-    final Map<String, String> updatedAnswers = {};
-    for (int i = 0; i < categories.length; i++) {
-      final category = categories[i];
-      final controller = _controllers[i];
-      updatedAnswers[category.name] = controller.text.trim();
-    }
-    context.read<GameProvider>().setAnswers(updatedAnswers);
-    debugPrint("📝 Collected Answers: $updatedAnswers");
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const ValidationScreen()),
-    );
-  }
-
-
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final game = context.watch<GameProvider>().game;
-    final categories = context.watch<GameProvider>().game.categories.where((c) => c.isSelected).toList();
 
-     return PopScope(
+    return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
@@ -77,49 +63,35 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         if (exit && context.mounted) Navigator.pop(context);
       },
       child: Scaffold(
-      backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         body: SafeArea(
-          child: Column( 
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: Column(
             children: [
-
-              // =========================
-              // Row 1: appname - col - timer
-              // =========================
+              // ===== Header: name + letter + timer
               Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'nomino',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontFamily: GoogleFonts.modak().fontFamily,
-                        color: const Color(0xFF717744),
-                        letterSpacing: 2.0,
+                    Text("nomino",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: GoogleFonts.modak().fontFamily,
+                          color: const Color(0xFF717744),
+                        )),
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.white,
+                      child: Text(
+                        widget.letter,
+                        style: TextStyle(
+                          fontFamily: GoogleFonts.dancingScript().fontFamily,
+                          color: AppColors.secondary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                        ),
                       ),
                     ),
-
-                    Column(
-                      children: [
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Colors.white,        
-                          child: Text(
-                            game.selectedChar,
-                            style: TextStyle(
-                              fontFamily: GoogleFonts.dancingScript().fontFamily,
-                              color: AppColors.secondary,        
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22,
-                            ),
-                          ),
-                        ),
-
-                      ],
-                    ),
-
                     TimerCountdown(
                       enableDescriptions: false,
                       format: CountDownTimerFormat.minutesSeconds,
@@ -128,7 +100,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         fontFamily: GoogleFonts.playfair().fontFamily,
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
-                        color: _warn ? AppColors.lightRed : AppColors.primaryVariant, // normal → red
+                        color: _warn
+                            ? AppColors.lightRed
+                            : AppColors.primaryVariant,
                       ),
                       onTick: (remaining) {
                         if (!_warn && remaining.inSeconds <= 60) {
@@ -136,8 +110,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         }
                       },
                       onEnd: () {
-                        setState(() => _warn = false); 
-                        _onSubmit(context);
+                        final answers = <String, String>{};
+                        for (int i = 0; i < widget.categories.length; i++) {
+                          answers[widget.categories[i]] =
+                              _controllers[i].text.trim();
+                        }
+                        widget.onSubmit(answers);
                       },
                     ),
                   ],
@@ -146,16 +124,14 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
               const Divider(thickness: 2),
 
-              // =========================
-              // Row 2: Textfields (later PageView)
-              // =========================
+              // ===== Inputs
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(7),
                   child: SingleChildScrollView(
                     controller: _scrollController,
                     child: Column(
-                      children: categories.asMap().entries.map((entry) {
+                      children: widget.categories.asMap().entries.map((entry) {
                         final index = entry.key;
                         final cat = entry.value;
 
@@ -169,8 +145,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                               showCursor: true,
                               readOnly: true, // using custom keyboard
                               decoration: InputDecoration(
-                                labelText: cat.name,
-                                prefixIcon: Icon(getIconForCategory(cat.name)),
+                                labelText: cat,
+                                prefixIcon: Icon(getIconForCategory(cat)),
                                 border: const OutlineInputBorder(),
                               ),
                               onTap: _revealFocused, // optional, feels nice
@@ -185,39 +161,34 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 ),
               ),
 
-              // =========================
-              // Row 3: Buttons
-              // =========================
+              // ===== Buttons
               CurvedButton(
                 leftLabel: "RESET",
                 rightLabel: "SUBMIT",
-                onLeftPressed: () {
-                  for (final c in _controllers) {
-                    c.clear();
-                  }
-                },
+                onLeftPressed: widget.onReset,
                 onRightPressed: () {
-                  _onSubmit(context);
+                  final answers = <String, String>{};
+                  for (int i = 0; i < widget.categories.length; i++) {
+                    answers[widget.categories[i]] =
+                        _controllers[i].text.trim();
+                  }
+                  widget.onSubmit(answers);
                 },
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(height: 10),
 
-              // =========================
-              // Row 4: Keyboard
-              // =========================
               SizedBox(
                 height: screenSize.height * 0.31,
                 child: CustomKeyboard(),
               ),
-
             ],
           ),
         ),
-      )
-    );
+      ),
+    );  
   }
 
-  Future<bool> _showExitDialog(BuildContext context) async {
+    Future<bool> _showExitDialog(BuildContext context) async {
     final provider = context.read<GameProvider>();
     return await showDialog<bool>(
       context: context,
@@ -257,8 +228,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       ),
     ) ?? false;
   }
-
-  void _revealFocused() {
+  
+   void _revealFocused() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final ctx = FocusManager.instance.primaryFocus?.context;
       if (ctx != null) {
@@ -271,5 +242,4 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       }
     });
   }
-
 }

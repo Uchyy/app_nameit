@@ -74,70 +74,75 @@ class Nomino extends StatefulWidget {
 class NominoState extends State<Nomino> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFEFF1ED),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const SizedBox(width: 20.0, height: 100.0),
-                Text(
-                  'nomino',
-                  style: TextStyle(
-                    fontSize: 60.0,
-                    fontFamily: GoogleFonts.modak().fontFamily,
-                    color: const Color(0xFF717744),
-                    letterSpacing: 2.0,
+    return WillPopScope(
+      onWillPop: () async {
+        SystemNavigator.pop(); // 👈 exits the app completely
+        return false; // prevents normal back navigation
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xFFEFF1ED),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const SizedBox(width: 20.0, height: 100.0),
+                  Text(
+                    'nomino',
+                    style: TextStyle(
+                      fontSize: 60.0,
+                      fontFamily: GoogleFonts.modak().fontFamily,
+                      color: const Color(0xFF717744),
+                      letterSpacing: 2.0,
+                    ),
+                    textAlign: TextAlign.left,
                   ),
-                  textAlign: TextAlign.left,
-                ),
-                DefaultTextStyle(
-                  style: TextStyle(
-                    fontSize: 40.0,
-                    fontFamily: GoogleFonts.dancingScript().fontFamily,
-                    color: const Color(0xFF373D20),
+                  DefaultTextStyle(
+                    style: TextStyle(
+                      fontSize: 40.0,
+                      fontFamily: GoogleFonts.dancingScript().fontFamily,
+                      color: const Color(0xFF373D20),
+                    ),
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        TyperAnimatedText('a song'),
+                        TyperAnimatedText('a food'),
+                        TyperAnimatedText('a movie'),
+                        TyperAnimatedText('a name'),
+                      ],
+                      isRepeatingAnimation: true,
+                    ),
                   ),
-                  child: AnimatedTextKit(
-                    animatedTexts: [
-                      TyperAnimatedText('a song'),
-                      TyperAnimatedText('a food'),
-                      TyperAnimatedText('a movie'),
-                      TyperAnimatedText('a name'),
-                    ],
-                    isRepeatingAnimation: true,
-                    //totalRepeatCount: 4,
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
 
-            const SizedBox(height: 45.0),
-            ElevatedButton(
-              style: elevatedButtonStyle(),
-              onPressed: () {
-                Navigator.of(context).push(PageRouteBuilder(
-                  opaque: false,
-                  pageBuilder: (_, __, ___) => const GameSetupScreen(),
-                ));
-              },
-              child: const Text('PLAY'),
-            ),
+              const SizedBox(height: 45.0),
+              ElevatedButton(
+                style: elevatedButtonStyle(),
+                onPressed: () {
+                  Navigator.of(context).push(PageRouteBuilder(
+                    opaque: false,
+                    pageBuilder: (_, __, ___) => const GameSetupScreen(),
+                  ));
+                },
+                child: const Text('PLAY'),
+              ),
 
-            const SizedBox(height: 15.0),
-            ElevatedButton(
-              style: elevatedButtonStyle(),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AccountScreen()),
-                );
-              },
-              child: const Text('ACCOUNT'),
-            ),
-          ],
+              const SizedBox(height: 15.0),
+              ElevatedButton(
+                style: elevatedButtonStyle(),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const AccountScreen()),
+                  );
+                },
+                child: const Text('ACCOUNT'),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -64,39 +64,15 @@ class _ResultsScreenState extends State<ResultsScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFEFF1ED),
       body: _loading
-        ? _buildLoading()
+        ? const CircularProgressIndicator()
         : _result == null
           ? const Center(child: Text("No results found"))
           : _buildResults(),
     );
   }
 
-  /// 1️⃣ Loading Progress View
-  Widget _buildLoading() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(color: Color(0xFF717744)),
-          const SizedBox(height: 20),
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
-            child: Text(
-              "Validating answers...",
-              key: ValueKey(DateTime.now().millisecondsSinceEpoch),
-              style: TextStyle(
-                fontSize: 18,
-                fontFamily: GoogleFonts.lato().fontFamily,
-                color: const Color(0xFF717744),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  /// 2️⃣ Final Results View
+  /// 2️Final Results View
   Widget _buildResults() {
     final result = _result!;
     final total = result.getTotal();

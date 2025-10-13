@@ -1,9 +1,14 @@
-import 'package:app_nameit/game_play/play_solo.dart';
+import 'package:app_nameit/game_play/solo_screen.dart';
+import 'package:app_nameit/helpers/game_provider.dart';
+import 'package:app_nameit/main.dart';
 import 'package:app_nameit/model/games.dart';
 import 'package:app_nameit/service/store_impl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+
 
 class WaitingRoom extends StatefulWidget {
   final String gameCode;
@@ -20,46 +25,52 @@ class _WaitingRoomState extends State<WaitingRoom> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFEFF1ED),
-      appBar: AppBar(
-        title: const Text("Waiting Room"),
-        centerTitle: true,
-        backgroundColor: const Color(0xFF717744),
-      ),
-      body: StreamBuilder<FirestoreGame?>(
-        stream: _store.streamGame(widget.gameCode),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text("Game not found"));
-          }
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        final exit = await _showExitDialog(context);
+        if (exit && context.mounted) Navigator.pop(context);
+      }, 
+      child: Scaffold(
+        backgroundColor: const Color(0xFFEFF1ED),
+        appBar: AppBar(
+          automaticallyImplyLeading: false, // 👈 hides the back arrow
+          title: const Text("Waiting Room"),
+          centerTitle: true,
+          backgroundColor: const Color(0xFF717744),
+        ),
+        body: StreamBuilder<FirestoreGame?>(
+          stream: _store.streamGame(widget.gameCode),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (!snapshot.hasData || snapshot.data == null) {
+              return const Center(child: Text("Game not found"));
+            }
 
-          final game = snapshot.data!;
+            final game = snapshot.data!;
 
-          //if (game.hasEnded ) {}
-
-          // If the game has started, navigate immediately
-          if (game.hasStarted && !game.hasEnded) {
-            Future.microtask(() {
-              if (mounted) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => GamePlayScreen(minutes: game.duration),
-                  ),
-                );
-              }
-            });
-          }
-
-          return _buildWaitingUI(context, game);
-        },
+            if (game.hasStarted && !game.hasEnded) {
+              Future.microtask(() {
+                if (mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => SoloPlayScreen(),
+                    ),
+                  );
+                }
+              });
+            }
+            return _buildWaitingUI(context, game);
+          },
+        ),
       ),
     );
   }
+
 
   Widget _buildWaitingUI(BuildContext context, FirestoreGame game) {
     return SingleChildScrollView(
@@ -71,17 +82,30 @@ class _WaitingRoomState extends State<WaitingRoom> {
           children: [
             // ===== QR CODE + Code =====
             Container(
-              height: 120,
-              width: 120,
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: const Color(0xFF717744).withOpacity(0.15),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFF717744), width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
-              child: const Center(
-                child: Text(
-                  "QR CODE",
-                  style: TextStyle(color: Color(0xFF717744)),
+              child: QrImageView(
+                data: game.code,
+                version: QrVersions.auto,
+                size: 180,
+                backgroundColor: Colors.white,
+                eyeStyle: const QrEyeStyle(
+                  eyeShape: QrEyeShape.square,
+                  color: Color(0xFF717744),
+                ),
+                dataModuleStyle: const QrDataModuleStyle(
+                  dataModuleShape: QrDataModuleShape.circle,
+                  color: Color(0xFF717744),
                 ),
               ),
             ),
@@ -250,11 +274,13 @@ class _WaitingRoomState extends State<WaitingRoom> {
                   ),
                   Divider(color: Colors.grey.shade400),
                   const SizedBox(height: 10),
-                  _infoRow("Created by", game.createdBy),
+                  _infoRow("Host", game.createdBy),
                   _divider(),
                   _infoRow("Selected Char", game.selectedChar),
                   _divider(),
                   _infoRow("Categories", game.selectedCategories.join(', ')),
+                  _divider(),
+                  _infoRow("Time", "${game.duration} mins")
                 ],
               ),
             ),
@@ -270,15 +296,26 @@ class _WaitingRoomState extends State<WaitingRoom> {
                 }
 
                 final isCreator = snapshot.data ?? false;
-                if (!isCreator) return const SizedBox.shrink();
+                if (!isCreator) {
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 5, bottom: 10),
+                    child: Text(
+                      "Only the host can start the game",
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: Colors.grey,
+                        fontSize: 14,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
 
                 return ElevatedButton.icon(
                   icon: const Icon(Icons.play_arrow),
                   onPressed: () async {
-                    await FirebaseFirestore.instance
-                        .collection('games')
-                        .doc(game.code)
-                        .update({'hasStarted': true});
+                    await _store.updateGameFields("hasStarted", true, game.code);
+                    
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF717744),
@@ -335,5 +372,46 @@ class _WaitingRoomState extends State<WaitingRoom> {
 }
 
 Widget _divider() => Divider(color: Colors.grey.shade300, height: 10);
+
+Future<bool> _showExitDialog(BuildContext context) async {
+  final provider = context.read<GameProvider>();
+  return await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      alignment: Alignment.center,
+      title: const Center(
+        child: Text(
+          "Are you sure?",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
+      content: const Text(
+        "You can still rejoin using game code.",
+        textAlign: TextAlign.center,
+      ),
+      actionsAlignment: MainAxisAlignment.center, // 👈 centers buttons
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text("Cancel"),
+        ),
+        ElevatedButton(
+          onPressed: () { 
+            provider.resetGame();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Nomino()),
+            );
+          },
+          child: const Text("Exit"),
+        ),
+      ],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16), // optional: softer edges
+      ),
+    ),
+  ) ?? false;
+}
 
 }

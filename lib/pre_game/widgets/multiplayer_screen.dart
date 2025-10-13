@@ -1,7 +1,12 @@
 import 'package:app_nameit/game_play/waiting_room.dart';
+import 'package:app_nameit/helpers/qrcode.dart';
 import 'package:app_nameit/misc/custom_snackbar.dart';
+import 'package:app_nameit/misc/page_loading.dart';
+import 'package:app_nameit/service/store_impl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class MultiplayerChoice extends StatefulWidget {
   final VoidCallback onNext;
@@ -14,6 +19,10 @@ class MultiplayerChoice extends StatefulWidget {
 class _MultiplayerChoiceState extends State<MultiplayerChoice> {
   bool _isJoining = false;
   final TextEditingController _codeController = TextEditingController();
+  final _storeService = StoreImpl();
+  final _auth = FirebaseAuth.instance;
+
+  Barcode? _barcode;
 
   @override
   Widget build(BuildContext context) {
@@ -85,24 +94,7 @@ class _MultiplayerChoiceState extends State<MultiplayerChoice> {
                       ),
                     ),
                     onChanged: (value) async {
-                      if (value.length == 6) {
-                        final code = value.trim().toUpperCase();
-                        final doc = await FirebaseFirestore.instance
-                            .collection('games')
-                            .doc(code)
-                            .get();
-
-                        if (doc.exists) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => WaitingRoom(gameCode: code),
-                            ),
-                          );
-                        } else {
-                          CustomSnackbar.show(context, title: "Code not found!", message: "Please create a game instead");
-                        }
-                      }
+                      _goToGame(context, value);
                     } 
                   ),
                 ),
@@ -113,13 +105,61 @@ class _MultiplayerChoiceState extends State<MultiplayerChoice> {
                     color: borderColor,
                     size: 30,
                   ),
-                  onPressed: () { },
+                  onPressed: () async {
+                    final scannedCode = await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const QRScanScreen()),
+                    );
+                    debugPrint("Scanned code is : $scannedCode");
+                    if (scannedCode != null && scannedCode.isNotEmpty) {
+                      _codeController.text = scannedCode;
+                      print('✅ Scanned Game Code: $scannedCode');
+                      _goToGame(context, scannedCode);
+                    }
+                  },
                 )
+
               ],
             ),
           )
         : const SizedBox.shrink(),
       ],
     );
+  }
+
+
+
+  _goToGame(BuildContext context, String value) async {
+
+    if (value.length == 6) {
+      final code = value.trim().toUpperCase();
+      final doc = await FirebaseFirestore.instance
+          .collection('games')
+          .doc(code)
+          .get();
+
+      if (doc.exists) {
+        try {
+          debugPrint("FIRESTORE - ADDING PLAYER TO GAME SESSION");
+          _storeService.updateGameFields("playerIds", _auth.currentUser!.uid, code);
+        } on Exception catch (e) {
+          debugPrint("ERROR ADDING PLAYER: $e");
+        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => PageLoading(
+            first: "Getting game session...",
+            second: "Adding you to the game...",
+            third: "Loading waiting room...", 
+            nextPage: WaitingRoom(gameCode: code,),  
+          )),
+        );                     
+      } else {
+        CustomSnackbar.show(context, title: "Code not found!", message: "Please create a game instead");
+      }
+    }
+
+    return;
+    
   }
 }
