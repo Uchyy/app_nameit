@@ -1,5 +1,5 @@
 // play_solo.dart
-import 'package:app_nameit/misc/game_base.dart';
+import 'package:app_nameit/game_play/widgets/game_base.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../helpers/game_provider.dart';
@@ -12,8 +12,7 @@ class SoloPlayScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final game = context.watch<GameProvider>().game;
-    final selectedCategories =
-        game.categories.where((c) => c.isSelected).map((c) => c.name).toList();
+    final selectedCategories = game.categories.where((c) => c.isSelected).map((c) => c.name).toList();
 
     return GamePlayBase(
       letter: game.selectedChar,

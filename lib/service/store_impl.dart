@@ -5,6 +5,7 @@ import 'package:app_nameit/model/player.dart';
 import 'package:app_nameit/service/store_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart';
 
 class StoreImpl implements StoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -105,6 +106,10 @@ class StoreImpl implements StoreService {
   @param field     The field or nested path to update.
   @param value     The new value or Firestore FieldValue operation.
   @param gameCode  The gameCode document ID.
+
+  Usage:
+  await updateGameField( gameCode, 'scores',MapEntry(currentUserId, 75.0), );
+
 */
 @override
 Future<void> updateGameFields(String field, dynamic value, String gameCode) async {
@@ -124,12 +129,20 @@ Future<void> updateGameFields(String field, dynamic value, String gameCode) asyn
         break;
 
       case 'scores':
-        if (value is Map<String, double>) {
-          print("✅ Replaced all scores → $value for game: $gameCode");
+        if (value is MapEntry<String, double>) {
+          final uid = value.key;
+          final score = value.value;
+
+          await _db.collection('games').doc(gameCode).update({
+            'scores.$uid': score, // 👈 updates only that player’s score
+          });
+
+          print("✅ Updated score for $uid → $score in game: $gameCode");
         } else {
-          throw ArgumentError("scores expects a Map<String, double>");
+          throw ArgumentError("scores expects a MapEntry<String, double> (uid → score)");
         }
         break;
+
 
       default:
         print("⚠️ Unknown field '$field'. Updating directly as fallback.");
@@ -162,5 +175,91 @@ Future<void> updateGameFields(String field, dynamic value, String gameCode) asyn
     return false;
   }
 
+  Future<Map<String, String>> getUserAnswerMultiplay(String code, String uid) async {
 
+    final doc = await _db
+        .collection('users')
+        .doc(uid)
+        .collection('multiplayer')
+        .doc(code)
+        .get();
+
+    if (!doc.exists) {
+      return {}; // empty map if no data
+    }
+
+    final data = doc.data();
+    if (data == null || data['answers'] == null) {
+      return {};
+    }
+
+    // Ensure values are Strings (Firestore maps can be dynamic)
+    final answers = Map<String, String>.from(data['answers'] as Map);
+
+    return answers;
+  }
+
+  Future<void> setPlayerScore(String markedUid, String gameCode, double totalScore,) async {
+    final uid = getUserid();
+    try {
+
+      await _db
+          .collection('users')
+          .doc(markedUid)
+          .collection('multiplayer')
+          .doc(gameCode)
+          .update({
+        'markedBy': uid,
+        'totalScore': totalScore,
+      });
+
+      print("✅ Updated score for $markedUid → $totalScore");
+    } catch (e) {
+      print("❌ Error updating player score: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> updateUserMultiPlayDoc (String markedUid, String gameCode) async {
+    final uid = getUserid();
+    try {
+
+      await _db
+          .collection('users')
+          .doc(uid)
+          .collection('multiplayer')
+          .doc(gameCode)
+          .update({
+        'markedWho': markedUid,
+      });
+
+      print("✅ Updated score for marekdWho → $markedUid");
+    } catch (e) {
+      print("❌ Error updating player score: $e");
+      rethrow;
+    }
+  }
+
+  Future<double?> getUserScore(String gameCode) async {
+    try {
+      final uid = getUserid(); // current user
+
+      final doc = await _db
+          .collection('users')
+          .doc(uid)
+          .collection('multiplayer')
+          .doc(gameCode)
+          .get();
+
+      if (!doc.exists) return 0.0;
+
+      final data = doc.data();
+      if (data == null || data['totalScore'] == null) return 0.0;
+
+      return (data['totalScore'] as num).toDouble();
+    } catch (e) {
+      print("❌ Error getting user score: $e");
+      return 0.0;
+    }
+  }
 }

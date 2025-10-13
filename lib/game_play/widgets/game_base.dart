@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
 import 'package:provider/provider.dart';
-import '../misc/curved_button.dart';
-import '../misc/custom_keyboard.dart';
-import '../theme/colors.dart';
+import '../../misc/curved_button.dart';
+import '../../misc/custom_keyboard.dart';
+import '../../theme/colors.dart';
 
 class GamePlayBase extends StatefulWidget {
   final String letter;

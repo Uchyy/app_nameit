@@ -1,4 +1,5 @@
 import 'package:app_nameit/account/main.dart';
+import 'package:app_nameit/game_play/marking_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/services.dart';
@@ -59,7 +60,7 @@ class MyApp extends StatelessWidget {
           seedColor: const Color.fromARGB(255, 132, 116, 160),
         ),
       ),
-      home: const Nomino(),
+      home: const MarkingScreen(code: "EEJK89"),
     );
   }
 }

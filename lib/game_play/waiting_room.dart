@@ -36,7 +36,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
       child: Scaffold(
         backgroundColor: const Color(0xFFEFF1ED),
         appBar: AppBar(
-          automaticallyImplyLeading: false, // 👈 hides the back arrow
+          automaticallyImplyLeading: false, 
           title: const Text("Waiting Room"),
           centerTitle: true,
           backgroundColor: const Color(0xFF717744),

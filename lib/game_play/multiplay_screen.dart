@@ -1,7 +1,7 @@
 // play_multiplayer.dart
 import 'dart:ffi';
 
-import 'package:app_nameit/misc/game_base.dart';
+import 'package:app_nameit/game_play/widgets/game_base.dart';
 import 'package:app_nameit/model/multiplayer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -35,7 +35,7 @@ class PlayMultiplayerScreen extends StatelessWidget {
           minutes: game.duration,
           categories: categories,
           onSubmit: (answers) async {
-            await _store.updateGameFields("answers.${_auth.currentUser!.uid}", answers, gameCode);
+            //await _store.updateGameFields("answers.${_auth.currentUser!.uid}", answers, gameCode);
             Multiplay multiplay = Multiplay(
               totalScore: 0, 
               answers: answers, 
