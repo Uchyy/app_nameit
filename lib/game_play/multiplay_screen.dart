@@ -1,10 +1,7 @@
 // play_multiplayer.dart
-import 'dart:ffi';
 
 import 'package:app_nameit/game_play/widgets/game_base.dart';
 import 'package:app_nameit/model/multiplayer.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../model/games.dart';
 import '../service/store_impl.dart';
@@ -18,7 +15,6 @@ class PlayMultiplayerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _store = StoreImpl();
-    final _auth = FirebaseAuth.instance;
 
     return StreamBuilder<FirestoreGame?>(
       stream: _store.streamGame(gameCode),

@@ -1,10 +1,8 @@
 import 'package:app_nameit/game_play/multiplay_screen.dart';
-import 'package:app_nameit/game_play/solo_screen.dart';
 import 'package:app_nameit/helpers/game_provider.dart';
 import 'package:app_nameit/main.dart';
 import 'package:app_nameit/model/games.dart';
 import 'package:app_nameit/service/store_impl.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
