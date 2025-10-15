@@ -1,10 +1,10 @@
 // play_solo.dart
-import 'package:app_nameit/game_play/widgets/game_base.dart';
+import 'package:app_nameit/game_play/widgets/game_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../helpers/game_provider.dart';
-import '../game_play/result_screen.dart';
-import '../misc/page_loading.dart';
+import '../../helpers/game_provider.dart';
+import 'result_screen.dart';
+import '../../misc/page_loading.dart';
 
 class SoloPlayScreen extends StatelessWidget {
   const SoloPlayScreen({super.key});

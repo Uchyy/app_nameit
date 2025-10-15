@@ -1,9 +1,9 @@
 import 'dart:ui';
 
 import 'package:app_nameit/account/main.dart';
-import 'package:app_nameit/game_play/solo_screen.dart';
+import 'package:app_nameit/game_play/solo/solo_screen.dart';
 import 'package:app_nameit/misc/page_loading.dart';
-import 'package:app_nameit/game_play/waiting_room.dart';
+import 'package:app_nameit/game_play/multiplay/waiting_room.dart';
 import 'package:app_nameit/helpers/generate_game_code.dart';
 import 'package:app_nameit/main.dart';
 import 'package:app_nameit/helpers/game_provider.dart';

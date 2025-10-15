@@ -199,7 +199,7 @@ Future<void> updateGameFields(String field, dynamic value, String gameCode) asyn
     return answers;
   }
 
-  Future<void> setPlayerScore(String markedUid, String gameCode, double totalScore,) async {
+  Future<void> setPlayerScore(String markedUid, String gameCode, double totalScore, Map <String, double> scores) async {
     final uid = getUserid();
     try {
 
@@ -211,6 +211,7 @@ Future<void> updateGameFields(String field, dynamic value, String gameCode) asyn
           .update({
         'markedBy': uid,
         'totalScore': totalScore,
+        'scores': scores,
       });
 
       print("✅ Updated score for $markedUid → $totalScore");
@@ -240,26 +241,45 @@ Future<void> updateGameFields(String field, dynamic value, String gameCode) asyn
     }
   }
 
-  Future<double?> getUserScore(String gameCode) async {
-    try {
-      final uid = getUserid(); // current user
+  Stream<double> getUserScore(String gameCode) {
+    final uid = getUserid();
 
-      final doc = await _db
-          .collection('users')
-          .doc(uid)
-          .collection('multiplayer')
-          .doc(gameCode)
-          .get();
-
-      if (!doc.exists) return 0.0;
-
-      final data = doc.data();
-      if (data == null || data['totalScore'] == null) return 0.0;
-
-      return (data['totalScore'] as num).toDouble();
-    } catch (e) {
-      print("❌ Error getting user score: $e");
-      return 0.0;
-    }
+    return _db
+        .collection('users')
+        .doc(uid)
+        .collection('multiplayer')
+        .doc(gameCode)
+        .snapshots()
+        .map((snapshot) {
+          if (!snapshot.exists) return 0.0;
+          final data = snapshot.data();
+          if (data == null || data['totalScore'] == null) return 0.0;
+          return (data['totalScore'] as num).toDouble();
+        });
   }
+
+   Future<Map<String, double>> getUserScoreArray(String code) async {
+    final uid = getUserid();
+    final doc = await _db
+        .collection('users')
+        .doc(uid)
+        .collection('multiplayer')
+        .doc(code)
+        .get();
+
+    if (!doc.exists) {
+      return {}; // empty map if no data
+    }
+
+    final data = doc.data();
+    if (data == null || data['scores'] == null) {
+      return {};
+    }
+
+    // Ensure values are Strings (Firestore maps can be dynamic)
+    final scores = Map<String, double>.from(data['scores'] as Map);
+
+    return scores;
+  }
+
 }

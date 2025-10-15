@@ -1,4 +1,4 @@
-import 'package:app_nameit/game_play/multiplay_screen.dart';
+import 'package:app_nameit/game_play/multiplay/multiplay_screen.dart';
 import 'package:app_nameit/helpers/game_provider.dart';
 import 'package:app_nameit/main.dart';
 import 'package:app_nameit/model/games.dart';

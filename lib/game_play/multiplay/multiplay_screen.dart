@@ -1,10 +1,12 @@
 // play_multiplayer.dart
 
-import 'package:app_nameit/game_play/widgets/game_base.dart';
+import 'package:app_nameit/game_play/marking_screen.dart';
+import 'package:app_nameit/game_play/widgets/game_screen.dart';
+import 'package:app_nameit/misc/page_loading.dart';
 import 'package:app_nameit/model/multiplayer.dart';
 import 'package:flutter/material.dart';
-import '../model/games.dart';
-import '../service/store_impl.dart';
+import '../../model/games.dart';
+import '../../service/store_impl.dart';
 //import '../game_play/result_screen.dart';
 //import '../misc/page_loading.dart';
 
@@ -15,6 +17,7 @@ class PlayMultiplayerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _store = StoreImpl();
+    
 
     return StreamBuilder<FirestoreGame?>(
       stream: _store.streamGame(gameCode),
@@ -36,30 +39,29 @@ class PlayMultiplayerScreen extends StatelessWidget {
               totalScore: 0, 
               answers: answers, 
               gameCode: gameCode, 
+              scores: {},
               markedBy: "", 
               markedWho: ""
             );
 
             try {
               _store.createMultiplayer(multiplay);
-              debugPrint("cCreating multiplay");
+              debugPrint("Creating multiplay");
             } on Exception catch (e) {
               debugPrint("Error creating multiplay doc: $e");
             }
 
-            /*
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => const PageLoading(
-                  first: "Checking dictionary...",
-                  second: "Validating group...",
-                  third: "Calculating scores...",
-                  nextPage: ResultsScreen(),
+                builder: (_) => PageLoading(
+                  first: "Saving your answers...",
+                  second: "Getting your marker...",
+                  third: "Getting answers...",
+                  nextPage: MarkingScreen(code:gameCode),
                 ),
               ),
             );
-            */
           },
         );
       },

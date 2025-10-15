@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
           seedColor: const Color.fromARGB(255, 132, 116, 160),
         ),
       ),
-      home: const MarkingScreen(code: "EEJK89"),
+      home: const MarkingScreen(code: "FAFCSJ"),
     );
   }
 }

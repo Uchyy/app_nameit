@@ -1,4 +1,4 @@
-import 'package:app_nameit/game_play/waiting_room.dart';
+import 'package:app_nameit/game_play/multiplay/waiting_room.dart';
 import 'package:app_nameit/helpers/qrcode.dart';
 import 'package:app_nameit/misc/custom_snackbar.dart';
 import 'package:app_nameit/misc/page_loading.dart';
