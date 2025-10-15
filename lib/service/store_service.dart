@@ -1,24 +1,64 @@
 import 'package:app_nameit/model/games.dart';
 import 'package:app_nameit/model/multiplayer.dart';
-import 'package:app_nameit/model/solo.dart';
 import 'package:app_nameit/model/player.dart';
+import 'package:app_nameit/model/solo.dart';
 
 abstract class StoreService {
+  /* -------------------- USER -------------------- */
 
-  // ✅ User creation
+  /* Create a new user document */
   Future<void> createUser(Player user);
 
-  // ✅ Game creation and retrieval
-  Future<void> createGame(FirestoreGame game);
-  Stream<FirestoreGame?> streamGame(String code); // 👈 Live game updates
+  /* Check if user email already exists */
+  Future<bool> checkIfUserEmailExist(String email);
 
-  // ✅ Solo + Multiplayer persistence
+  /* Get the current user's UID */
+  String getUserid();
+
+
+  /* -------------------- GAME -------------------- */
+
+  /* Create a new game document */
+  Future<void> createGame(FirestoreGame game);
+
+  /* Stream live updates for a specific game */
+  Stream<FirestoreGame?> streamGame(String code);
+
+  /* Check if the user is the creator of a game */
+  Future<bool?> isCreator(String creator);
+
+  /* Update a specific field in the game document */
+  Future<void> updateGameFields(String value, String field, String gameCode);
+
+
+  /* -------------------- SOLO / MULTIPLAYER -------------------- */
+
+  /* Create a solo game record */
   Future<void> createSolo(Solo solo);
+
+  /* Create a multiplayer record */
   Future<void> createMultiplayer(Multiplay multiplay);
 
-  //is the User the creator
-  Future <bool?>  isCreator(String creator); 
 
-  Future <void> updateGameFields (String value, String field, String gameCode);
-  Future<bool> checkIfUserEmailExist(String email);
+  /* -------------------- MULTIPLAYER SCORING -------------------- */
+
+  /* Fetch user answers in a multiplayer game */
+  Future<Map<String, String>> getUserAnswerMultiplay(String code, String uid);
+
+  /* Update player's total score and detailed scores */
+  Future<void> setPlayerScore(
+    String markedUid,
+    String gameCode,
+    double totalScore,
+    Map<String, double> scores,
+  );
+
+  /* Update which user this player has marked */
+  Future<void> updateUserMultiPlayDoc(String markedUid, String gameCode);
+
+  /* Stream live updates of the current user's score */
+  Stream<double> getUserScore(String gameCode);
+
+  /* Get detailed score breakdown (per category) */
+  Future<Map<String, double>> getUserScoreArray(String code);
 }

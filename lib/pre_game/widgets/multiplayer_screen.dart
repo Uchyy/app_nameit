@@ -6,7 +6,6 @@ import 'package:app_nameit/service/store_impl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
 
 class MultiplayerChoice extends StatefulWidget {
   final VoidCallback onNext;
@@ -21,8 +20,6 @@ class _MultiplayerChoiceState extends State<MultiplayerChoice> {
   final TextEditingController _codeController = TextEditingController();
   final _storeService = StoreImpl();
   final _auth = FirebaseAuth.instance;
-
-  Barcode? _barcode;
 
   @override
   Widget build(BuildContext context) {

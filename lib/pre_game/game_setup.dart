@@ -15,7 +15,6 @@ import 'package:app_nameit/pre_game/widgets/select_char.dart';
 import 'package:app_nameit/pre_game/widgets/select_duration.dart';
 import 'package:app_nameit/pre_game/widgets/select_mode.dart';
 import 'package:app_nameit/service/store_impl.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
