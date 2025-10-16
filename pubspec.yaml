@@ -47,7 +47,6 @@ dependencies:
   qr: ^3.0.2
   qr_flutter: ^4.1.0
   barcode: ^2.2.9
-  mobile_scanner: ^7.1.2
   qr_code_scanner: ^1.0.1
   qr_code_scanner_plus: ^2.0.12
   flutter_launcher_icons: ^0.14.4
