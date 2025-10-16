@@ -12,27 +12,64 @@ class CustomKeyboard extends StatelessWidget {
       if (element != null) {
         final editable = element.findAncestorWidgetOfExactType<EditableText>();
         if (editable != null) {
-          editable.controller.text += letter;
+          final controller = editable.controller;
+          final selection = controller.selection;
+
+          if (selection.isValid) {
+            final text = controller.text;
+            final start = selection.start;
+            final end = selection.end;
+
+            // Insert letter at caret (replacing any selected text)
+            final newText = text.replaceRange(start, end, letter);
+            controller.text = newText;
+
+            // Move caret to just after inserted character
+            controller.selection = TextSelection.collapsed(offset: start + letter.length);
+          } else {
+            // Fallback if selection invalid — just append
+            controller.text += letter;
+          }
+
           onKeyTyped?.call(letter);
         }
       }
     }
   }
 
+
   void _handleSpace() {
-    final focused = FocusManager.instance.primaryFocus;
-    if (focused != null) {
-      final element = focused.context;
-      if (element != null) {
-        final editable = element.findAncestorWidgetOfExactType<EditableText>();
-        if (editable != null) {
-          editable.controller.text += " " ;
+  final focused = FocusManager.instance.primaryFocus;
+  if (focused != null) {
+    final element = focused.context;
+    if (element != null) {
+      final editable = element.findAncestorWidgetOfExactType<EditableText>();
+      if (editable != null) {
+        final controller = editable.controller;
+        final selection = controller.selection;
+
+        if (selection.isValid) {
+          final text = controller.text;
+          final start = selection.start;
+          final end = selection.end;
+
+          // Insert space at caret (replace selected text if any)
+          final newText = text.replaceRange(start, end, " ");
+          controller.text = newText;
+
+          // Move caret after inserted space
+          controller.selection = TextSelection.collapsed(offset: start + 1);
+        } else {
+          // Fallback if selection invalid — just append a space
+          controller.text += " ";
         }
       }
     }
   }
+}
 
- void _handleBackspace() {
+
+void _handleBackspace() {
   final focused = FocusManager.instance.primaryFocus;
   if (focused != null) {
     final element = focused.context;
