@@ -1,4 +1,4 @@
-import 'package:app_nameit/main.dart';
+import 'package:nomino/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,7 +16,7 @@ class ProfileScreen extends StatelessWidget {
         if (didPop) return;
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const Nomino()),
+          MaterialPageRoute(builder: (_) => const nomino()),
         );
       }, 
       child: Scaffold(

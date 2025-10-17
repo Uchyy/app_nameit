@@ -1,8 +1,8 @@
-import 'package:app_nameit/game_play/multiplay/multiplay_screen.dart';
-import 'package:app_nameit/helpers/game_provider.dart';
-import 'package:app_nameit/main.dart';
-import 'package:app_nameit/model/games.dart';
-import 'package:app_nameit/service/store_impl.dart';
+import 'package:nomino/game_play/multiplay/multiplay_screen.dart';
+import 'package:nomino/helpers/game_provider.dart';
+import 'package:nomino/main.dart';
+import 'package:nomino/model/games.dart';
+import 'package:nomino/service/store_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -400,7 +400,7 @@ Future<bool> _showExitDialog(BuildContext context) async {
             provider.resetGame();
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Nomino()),
+              MaterialPageRoute(builder: (context) => nomino()),
             );
           },
           child: const Text("Exit"),

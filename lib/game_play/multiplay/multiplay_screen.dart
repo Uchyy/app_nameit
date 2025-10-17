@@ -1,9 +1,9 @@
 // play_multiplayer.dart
 
-import 'package:app_nameit/game_play/marking_screen.dart';
-import 'package:app_nameit/game_play/widgets/game_screen.dart';
-import 'package:app_nameit/misc/page_loading.dart';
-import 'package:app_nameit/model/multiplayer.dart';
+import 'package:nomino/game_play/marking_screen.dart';
+import 'package:nomino/game_play/widgets/game_screen.dart';
+import 'package:nomino/misc/page_loading.dart';
+import 'package:nomino/model/multiplayer.dart';
 import 'package:flutter/material.dart';
 import '../../model/games.dart';
 import '../../service/store_impl.dart';

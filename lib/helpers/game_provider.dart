@@ -1,5 +1,5 @@
-import 'package:app_nameit/model/categories.dart';
-import 'package:app_nameit/model/game_vars.dart';
+import 'package:nomino/model/categories.dart';
+import 'package:nomino/model/game_vars.dart';
 import 'package:flutter/material.dart';
 
 class GameProvider extends ChangeNotifier {

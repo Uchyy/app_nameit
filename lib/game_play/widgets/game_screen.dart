@@ -1,7 +1,7 @@
 // game_play_base.dart
-import 'package:app_nameit/helpers/game_provider.dart';
-import 'package:app_nameit/main.dart';
-import 'package:app_nameit/model/categories.dart';
+import 'package:nomino/helpers/game_provider.dart';
+import 'package:nomino/main.dart';
+import 'package:nomino/model/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
@@ -222,7 +222,7 @@ class _GamePlayBaseState extends State<GamePlayBase> {
               provider.resetGame();
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Nomino()),
+                MaterialPageRoute(builder: (context) => nomino()),
               );
             },
             child: const Text("Exit"),

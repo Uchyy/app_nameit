@@ -1,7 +1,7 @@
-import 'package:app_nameit/account/profile.dart';
-import 'package:app_nameit/misc/custom_snackbar.dart';
-import 'package:app_nameit/model/player.dart';
-import 'package:app_nameit/service/store_impl.dart';
+import 'package:nomino/account/profile.dart';
+import 'package:nomino/misc/custom_snackbar.dart';
+import 'package:nomino/model/player.dart';
+import 'package:nomino/service/store_impl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

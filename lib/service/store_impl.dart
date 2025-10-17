@@ -1,8 +1,8 @@
-import 'package:app_nameit/model/games.dart';
-import 'package:app_nameit/model/multiplayer.dart';
-import 'package:app_nameit/model/player.dart';
-import 'package:app_nameit/model/solo.dart';
-import 'package:app_nameit/service/store_service.dart';
+import 'package:nomino/model/games.dart';
+import 'package:nomino/model/multiplayer.dart';
+import 'package:nomino/model/player.dart';
+import 'package:nomino/model/solo.dart';
+import 'package:nomino/service/store_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 

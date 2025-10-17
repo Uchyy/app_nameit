@@ -1,4 +1,4 @@
-import 'package:app_nameit/model/categories.dart';
+import 'package:nomino/model/categories.dart';
 
 class Game {
   String mode; // "solo" or "multiplayer"

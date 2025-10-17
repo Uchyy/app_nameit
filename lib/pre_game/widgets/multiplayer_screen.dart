@@ -1,8 +1,8 @@
-import 'package:app_nameit/game_play/multiplay/waiting_room.dart';
-import 'package:app_nameit/helpers/qrcode.dart';
-import 'package:app_nameit/misc/custom_snackbar.dart';
-import 'package:app_nameit/misc/page_loading.dart';
-import 'package:app_nameit/service/store_impl.dart';
+import 'package:nomino/game_play/multiplay/waiting_room.dart';
+import 'package:nomino/helpers/qrcode.dart';
+import 'package:nomino/misc/custom_snackbar.dart';
+import 'package:nomino/misc/page_loading.dart';
+import 'package:nomino/service/store_impl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

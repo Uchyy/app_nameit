@@ -1,7 +1,7 @@
-import 'package:app_nameit/model/games.dart';
-import 'package:app_nameit/model/multiplayer.dart';
-import 'package:app_nameit/model/player.dart';
-import 'package:app_nameit/model/solo.dart';
+import 'package:nomino/model/games.dart';
+import 'package:nomino/model/multiplayer.dart';
+import 'package:nomino/model/player.dart';
+import 'package:nomino/model/solo.dart';
 
 abstract class StoreService {
   /* -------------------- USER -------------------- */

@@ -1,5 +1,5 @@
 // play_solo.dart
-import 'package:app_nameit/game_play/widgets/game_screen.dart';
+import 'package:nomino/game_play/widgets/game_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../helpers/game_provider.dart';

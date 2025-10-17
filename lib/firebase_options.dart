@@ -73,7 +73,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '853507749033',
     projectId: 'nomino-c8c6b',
     storageBucket: 'nomino-c8c6b.firebasestorage.app',
-    iosBundleId: 'com.example.appNameit',
+    iosBundleId: 'com.example.nomino',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(

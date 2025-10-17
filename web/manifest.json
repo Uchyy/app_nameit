@@ -1,6 +1,6 @@
 {
-    "name": "app_nameit",
-    "short_name": "app_nameit",
+    "name": "nomino",
+    "short_name": "nomino",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

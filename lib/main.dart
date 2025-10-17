@@ -1,4 +1,4 @@
-import 'package:app_nameit/account/main.dart';
+import 'package:nomino/account/main.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/services.dart';
@@ -59,19 +59,19 @@ class MyApp extends StatelessWidget {
           seedColor: const Color.fromARGB(255, 132, 116, 160),
         ),
       ),
-      home: const Nomino(),
+      home: const nomino(),
     );
   }
 }
 
-class Nomino extends StatefulWidget {
-  const Nomino({super.key});
+class nomino extends StatefulWidget {
+  const nomino({super.key});
 
   @override
-  State<Nomino> createState() => NominoState();
+  State<nomino> createState() => nominoState();
 }
 
-class NominoState extends State<Nomino> with TickerProviderStateMixin {
+class nominoState extends State<nomino> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

@@ -1,9 +1,9 @@
-import 'package:app_nameit/main.dart';
-import 'package:app_nameit/misc/curved_button.dart';
-import 'package:app_nameit/misc/custom_snackbar.dart';
-import 'package:app_nameit/model/games.dart';
-import 'package:app_nameit/service/store_impl.dart';
-import 'package:app_nameit/theme/colors.dart';
+import 'package:nomino/main.dart';
+import 'package:nomino/misc/curved_button.dart';
+import 'package:nomino/misc/custom_snackbar.dart';
+import 'package:nomino/model/games.dart';
+import 'package:nomino/service/store_impl.dart';
+import 'package:nomino/theme/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -282,7 +282,7 @@ class _MarkingScreenState extends State<MarkingScreen> {
 
   void _goToHome () {
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const Nomino()),
+      MaterialPageRoute(builder: (_) => const nomino()),
       (route) => false,
     );
   }

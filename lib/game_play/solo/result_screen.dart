@@ -1,11 +1,11 @@
-import 'package:app_nameit/main.dart';
-import 'package:app_nameit/misc/curved_button.dart';
-import 'package:app_nameit/pre_game/game_setup.dart';
+import 'package:nomino/main.dart';
+import 'package:nomino/misc/curved_button.dart';
+import 'package:nomino/pre_game/game_setup.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app_nameit/helpers/game_provider.dart';
-import 'package:app_nameit/helpers/validate_answers.dart';
-import 'package:app_nameit/model/result.dart';
+import 'package:nomino/helpers/game_provider.dart';
+import 'package:nomino/helpers/validate_answers.dart';
+import 'package:nomino/model/result.dart';
 import 'package:provider/provider.dart';
 
 class ResultsScreen extends StatefulWidget {
@@ -204,7 +204,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
               onRightPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const Nomino()),
+                  MaterialPageRoute(builder: (_) => const nomino()),
                 );
                 provider.resetGame();
               },

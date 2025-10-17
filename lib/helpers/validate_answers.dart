@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:app_nameit/model/game_vars.dart';
-import 'package:app_nameit/model/result.dart';
+import 'package:nomino/model/game_vars.dart';
+import 'package:nomino/model/result.dart';
 
 class AnswerValidator {
   static const String _dictionaryApi =

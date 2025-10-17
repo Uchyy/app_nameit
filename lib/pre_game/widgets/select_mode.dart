@@ -1,5 +1,5 @@
-import 'package:app_nameit/helpers/game_provider.dart';
-import 'package:app_nameit/styles/sub_button.dart';
+import 'package:nomino/helpers/game_provider.dart';
+import 'package:nomino/styles/sub_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

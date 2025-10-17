@@ -1,20 +1,20 @@
 import 'dart:ui';
 
-import 'package:app_nameit/account/main.dart';
-import 'package:app_nameit/game_play/solo/solo_screen.dart';
-import 'package:app_nameit/misc/page_loading.dart';
-import 'package:app_nameit/game_play/multiplay/waiting_room.dart';
-import 'package:app_nameit/helpers/generate_game_code.dart';
-import 'package:app_nameit/main.dart';
-import 'package:app_nameit/helpers/game_provider.dart';
-import 'package:app_nameit/misc/game_setup_container.dart';
-import 'package:app_nameit/model/games.dart';
-import 'package:app_nameit/pre_game/widgets/multiplayer_screen.dart';
-import 'package:app_nameit/pre_game/widgets/select_category.dart';
-import 'package:app_nameit/pre_game/widgets/select_char.dart';
-import 'package:app_nameit/pre_game/widgets/select_duration.dart';
-import 'package:app_nameit/pre_game/widgets/select_mode.dart';
-import 'package:app_nameit/service/store_impl.dart';
+import 'package:nomino/account/main.dart';
+import 'package:nomino/game_play/solo/solo_screen.dart';
+import 'package:nomino/misc/page_loading.dart';
+import 'package:nomino/game_play/multiplay/waiting_room.dart';
+import 'package:nomino/helpers/generate_game_code.dart';
+import 'package:nomino/main.dart';
+import 'package:nomino/helpers/game_provider.dart';
+import 'package:nomino/misc/game_setup_container.dart';
+import 'package:nomino/model/games.dart';
+import 'package:nomino/pre_game/widgets/multiplayer_screen.dart';
+import 'package:nomino/pre_game/widgets/select_category.dart';
+import 'package:nomino/pre_game/widgets/select_char.dart';
+import 'package:nomino/pre_game/widgets/select_duration.dart';
+import 'package:nomino/pre_game/widgets/select_mode.dart';
+import 'package:nomino/service/store_impl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -127,7 +127,7 @@ class GameSetupScreenState extends State<GameSetupScreen> with SingleTickerProvi
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => const Nomino()),
+        MaterialPageRoute(builder: (_) => const nomino()),
       );
     }
   }
