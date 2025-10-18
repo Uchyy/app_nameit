@@ -204,7 +204,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
               onRightPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const nomino()),
+                  MaterialPageRoute(builder: (_) => const Nomino()),
                 );
                 provider.resetGame();
               },

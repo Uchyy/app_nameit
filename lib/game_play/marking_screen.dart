@@ -282,7 +282,7 @@ class _MarkingScreenState extends State<MarkingScreen> {
 
   void _goToHome () {
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const nomino()),
+      MaterialPageRoute(builder: (_) => const Nomino()),
       (route) => false,
     );
   }

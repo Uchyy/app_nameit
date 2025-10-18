@@ -37,6 +37,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
           automaticallyImplyLeading: false, 
           title: const Text("Waiting Room"),
           centerTitle: true,
+          foregroundColor: Colors.white,
           backgroundColor: const Color(0xFF717744),
         ),
         body: StreamBuilder<FirestoreGame?>(
@@ -51,6 +52,14 @@ class _WaitingRoomState extends State<WaitingRoom> {
 
             final game = snapshot.data!;
 
+            if (!game.hasEnded) {
+              return Center(
+                child: Text(
+                  "The game has ended. Exit this screen and create a new game"
+                ),
+              );
+            }
+
             if (game.hasStarted && !game.hasEnded) {
               Future.microtask(() {
                 if (mounted) {
@@ -63,6 +72,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
                 }
               });
             }
+
             return _buildWaitingUI(context, game);
           },
         ),
@@ -400,7 +410,7 @@ Future<bool> _showExitDialog(BuildContext context) async {
             provider.resetGame();
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => nomino()),
+              MaterialPageRoute(builder: (context) => Nomino()),
             );
           },
           child: const Text("Exit"),

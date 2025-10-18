@@ -14,10 +14,10 @@ class SelectCategories extends StatelessWidget {
     }
 
     return Card(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(5),
       color: Colors.white, // 👈 white background
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -27,7 +27,7 @@ class SelectCategories extends StatelessWidget {
                 decoration: TextDecoration.none,
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 153, 140, 80), // 👈 match border color
+                color: Colors.blueGrey, // 👈 match border color
               ),
             ),
             const SizedBox(height: 15),
@@ -37,7 +37,7 @@ class SelectCategories extends StatelessWidget {
                 return FilterChip(
                   label: Text(cat.name),
                   selected: cat.isSelected,
-                  selectedColor: const Color.fromARGB(80, 153, 140, 80), // 👈 faint fill
+                  selectedColor: const Color(0xFF3C90E8),
                   checkmarkColor: Colors.white,
                   onSelected: (_) {
                     context.read<GameProvider>().toggleCategory(cat);
@@ -49,6 +49,5 @@ class SelectCategories extends StatelessWidget {
         ),
       ),
     );
-
   }
 }

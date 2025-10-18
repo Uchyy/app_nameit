@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:nomino/helpers/game_provider.dart';
 import 'package:nomino/styles/sub_button.dart';
 import 'package:nomino/theme/colors.dart';
@@ -20,7 +21,7 @@ class SelectChar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-              icon: const Icon(Icons.remove_circle, size: 32, color: AppColors.lightRed),
+              icon: const Icon(Icons.remove_circle, size: 55, color: AppColors.lightRed),
               onPressed: () {
                 final current = game.selectedChar.isNotEmpty
                     ? game.selectedChar.codeUnitAt(0)
@@ -38,17 +39,18 @@ class SelectChar extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(
                 game.selectedChar.isNotEmpty ? game.selectedChar : "A",
-                style: const TextStyle(
-                  fontSize: 30, 
-                  color: AppColors.primaryVariant,
-                  fontWeight: FontWeight.bold, 
-                  decoration: TextDecoration.none
+                style: TextStyle(
+                  fontSize: 30,
+                fontFamily: GoogleFonts.playfair().fontFamily,
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFF4C3A75), // deep purple text
+                decoration: TextDecoration.none,
                 ),
               ),
             ),
 
             IconButton(
-              icon: const Icon(Icons.add_circle, size: 32, color: AppColors.secondaryVariant),
+              icon: const Icon(Icons.add_circle, size: 55, color: AppColors.secondaryVariant),
               onPressed: () {
                 final current = game.selectedChar.isNotEmpty
                     ? game.selectedChar.codeUnitAt(0)

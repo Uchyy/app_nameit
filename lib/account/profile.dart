@@ -16,7 +16,7 @@ class ProfileScreen extends StatelessWidget {
         if (didPop) return;
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const nomino()),
+          MaterialPageRoute(builder: (_) => const Nomino()),
         );
       }, 
       child: Scaffold(

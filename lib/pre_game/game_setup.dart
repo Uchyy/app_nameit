@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:nomino/account/main.dart';
 import 'package:nomino/game_play/solo/solo_screen.dart';
+import 'package:nomino/helpers/validate_code.dart';
+import 'package:nomino/misc/custom_snackbar.dart';
 import 'package:nomino/misc/page_loading.dart';
 import 'package:nomino/game_play/multiplay/waiting_room.dart';
 import 'package:nomino/helpers/generate_game_code.dart';
@@ -41,219 +43,186 @@ class GameSetupScreenState extends State<GameSetupScreen> with SingleTickerProvi
   }
 
   Future<void> _nextPage() async {
-    final game = Provider.of<GameProvider>(context, listen: false).game;
+    final provider = Provider.of<GameProvider>(context, listen: false);
+    final game = provider.game;
     final mode = game.mode.toLowerCase();
-    final totalPages = (mode == "multiplayer") ? 4 : 3;
 
-    if (_currentPage < totalPages) {
-      _currentPage++;
-      setState(() => _currentPage);
-      _pageController.animateToPage(
-        _currentPage,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+    // total steps = 5 if multiplayer (0–4), else 4 if solo (0–3)
+    final totalSteps = (mode == "multiplayer") ? 5 : 4;
+
+    if (mode == "multiplayer" && _currentPage == 1) {
+      if (provider.isJoining) {
+        final code = provider.joinCode;
+        final isValid = await validateJoinCode(context, code);
+        if (!isValid) return; // stop progress if invalid
+      } else {
+        debugPrint("Creating a new multiplayer game...");
+      }
+    }
+  
+    if (_currentPage < totalSteps - 1) {
+      // just go to the next step (no PageView animation)
+      setState(() => _currentPage++);
+      return;
+    }
+
+    // 🚀 We're at the final step, start the game logic
+    if (mode == "solo") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const PageLoading(
+            second: 'Creating game session...',
+            third: 'Loading game.....',
+            first: 'Finalizing......',
+            nextPage: SoloPlayScreen(),
+          ),
+        ),
       );
     } else {
-      if (game.mode == "solo") {
-        Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const PageLoading(
-              second: 'Creating game session...', 
-              third: 'Loading game.....', 
-              first: 'Finalizing......', 
-              nextPage: SoloPlayScreen(),  
-            )),
-          );
+      debugPrint("ENTERING MULTIPLAYER MODE");
 
-      } else {
-        debugPrint ("ENTEREING MUKTPLYAER MODE");
-        if (currentUser?.uid == null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const PageLoading(
-              second: 'Validating user...', 
-              third: 'User not signed in', 
-              first: 'Rerouting', 
-              nextPage: AccountScreen(),  
-            )),
-          );
-        } 
-        String code = await generateUniqueGameCode();
-        List<String> categories = Provider.of<GameProvider>(context, listen: false)
+      if (currentUser?.uid == null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const PageLoading(
+              second: 'Validating user...',
+              third: 'User not signed in',
+              first: 'Rerouting',
+              nextPage: AccountScreen(),
+            ),
+          ),
+        );
+        return;
+      }
+
+      // create multiplayer game
+      final code = await generateUniqueGameCode();
+      final categories = Provider.of<GameProvider>(context, listen: false)
           .game
           .categories
           .where((c) => c.isSelected)
           .map((c) => c.name)
           .toList();
 
-        String uid = currentUser!.uid;
-        
-        //Adding game to firstore
-        FirestoreGame firestoreGame = FirestoreGame(
-          code: code, 
-          createdBy: uid, 
-          createdOn: DateTime.now(), 
-          selectedChar: game.selectedChar , 
-          duration: game.duration,
-          selectedCategories: categories,
-        );
-        await storeService.createGame(firestoreGame);
-        await storeService.updateGameFields('playerIds', uid, code);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => PageLoading(
-              first: "Creating game session...",
-              second: "Adding you to the game...",
-              third: "Loading waiting room...",
-              nextPage: WaitingRoom(gameCode: code),
-            ),
-          ),
-        );
-      }
-    }
+      final uid = currentUser!.uid;
 
+      final firestoreGame = FirestoreGame(
+        code: code,
+        createdBy: uid,
+        createdOn: DateTime.now(),
+        selectedChar: game.selectedChar,
+        duration: game.duration,
+        selectedCategories: categories,
+      );
+
+      await storeService.createGame(firestoreGame);
+      await storeService.updateGameFields('playerIds', uid, code);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PageLoading(
+            first: "Creating game session...",
+            second: "Adding you to the game...",
+            third: "Loading waiting room...",
+            nextPage: WaitingRoom(gameCode: code),
+          ),
+        ),
+      );
+    }
   }
 
   void _previousPage() {
     if (_currentPage > 0) {
-      _currentPage--;
-      setState(() => _currentPage);
-      _pageController.animateToPage(
-        _currentPage,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+      setState(() => _currentPage--);
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => const nomino()),
+        MaterialPageRoute(builder: (_) => const Nomino()),
       );
     }
   }
 
-  double _getHeight() {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final mode = Provider.of<GameProvider>(context, listen: false).game.mode.toLowerCase();
-    final totalPages = (mode == "multiplayer") ? 5 : 4;
-    final lastPage = totalPages - 1;
-
-    if (_currentPage == lastPage) {
-      return screenHeight * 0.95;
-    }
-
-    if (_currentPage == 1 && mode == "multiplayer") {
-      return screenHeight * 0.6;
-    }
-
-    if (_currentPage == 2 && mode == "multiplayer") {
-      return screenHeight * 0.53;
-    }
-
-    if (_currentPage == 1 && mode != "multiplayer") {
-      return screenHeight * 0.53;
-    }
-    return screenHeight * 0.6;
-  }
-
-
   @override
   Widget build(BuildContext context) {
-    //final screenHeight = _getHeight();
     final mode = context.watch<GameProvider>().game.mode;
-    //final gameCode = generateUniqueGameCode();
 
     return Stack(
       children: [
+        // 🔹 Blurred background
         Positioned.fill(
           child: ClipRect(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-              child: Container(
-                color: Colors.transparent, // Optional: add semi-transparent overlay
-              ),
+              child: Container(color: Colors.transparent),
             ),
           ),
         ),
 
-        // Foreground content
+        // 🔹 Foreground bottom panel
         Align(
           alignment: Alignment.bottomCenter,
-          child: ClipRect(
+          child: AnimatedPadding(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOutCubic,
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
             child: AnimatedSize(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                height: _getHeight(),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                      child: Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back, size: 35, color: Color.fromARGB(255, 227, 100, 100)),
-                            onPressed: _previousPage,
+              duration: const Duration(milliseconds: 350),
+              curve: Curves.easeInOutCubic,
+              child: FractionallySizedBox(
+                widthFactor: 1,
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Header
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                          child: Row(
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.arrow_back, size: 35, color: Color(0xFFE46C5D)),
+                                onPressed: _previousPage,
+                              ),
+                              const Spacer(),
+                            ],
                           ),
-                          const Spacer(),
-                        ],
-                      ),
-                    ),
-
-                    Expanded(
-                      child: PageView(
-                        controller: _pageController,
-                        physics: const NeverScrollableScrollPhysics(),
-                        onPageChanged: (index) {
-                          setState(() {
-                            _currentPage = index;
-                          });
-                        },
-                        children: [
-                          GameSetupContainer(
-                            borderColor: const Color.fromARGB(255, 199, 182, 109),
-                            title: "SELECT MODE",
-                            child: SelectGameMode(onNext: _nextPage),
-                          ),
-                          if (mode.toLowerCase() == "multiplayer")
-                            GameSetupContainer(
-                              borderColor: const Color.fromARGB(255, 178, 165, 106),
-                              title: "MULTIPLAYER CHOICE",
-                              child: MultiplayerChoice(onNext: _nextPage),
-                            ),
-                          GameSetupContainer(
-                            borderColor: const Color.fromARGB(255, 229, 213, 141),
-                            title: "SELECT DURATION",
-                            child: SelectDuration(),
-                          ),
-                          GameSetupContainer(
-                            borderColor: const Color.fromARGB(255, 153, 140, 80),
-                            title: "SELECT CHARACTER",
-                            child: SelectChar(),
-                          ),
-                          GameSetupContainer(
-                            borderColor: const Color.fromARGB(255, 153, 140, 80),
-                            title: "SELECT CATEGORIES",
-                            child: SelectCategories(),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0,),
-                      child: Center(
-                        child: IconButton(
-                          alignment: Alignment.center,
-                          icon: const Icon(Icons.arrow_forward, size: 35, color:  Color.fromARGB(255, 164, 72, 235)),
-                          onPressed: _nextPage,
                         ),
-                      ),
-                    ),
 
-                    const SizedBox(height: 50),
-                  ],
+                        // Dynamic step
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          switchInCurve: Curves.easeInOut,
+                          switchOutCurve: Curves.easeInOut,
+                          child: _buildStep(_currentPage, mode),
+                        ),
+
+                        // Footer
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Center(
+                            child: IconButton(
+                              alignment: Alignment.center,
+                              icon: const Icon(Icons.arrow_forward, size: 35, color: Color(0xFF8A6FB3)),
+                              onPressed: _nextPage,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 35,),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -261,9 +230,98 @@ class GameSetupScreenState extends State<GameSetupScreen> with SingleTickerProvi
         ),
       ],
     );
+}
 
-  }
-    
+  Widget _buildStep(int index, String mode) {
+    final isMulti = mode.toLowerCase() == "multiplayer";
+
+    if (index == 0) {
+      return GameSetupContainer(
+        key: const ValueKey('mode'),
+        borderColor: const Color(0xFF8A6FB3),
+        title: "SELECT MODE",
+        icon: Icons.sports_esports,
+        child: SelectGameMode(onNext: _nextPage),
+      );
+    }
+
+    if (isMulti) {
+      switch (index) {
+        case 1:
+          return GameSetupContainer(
+            key: const ValueKey('multiplayer'),
+            borderColor: const Color(0xFFE46C5D),
+            title: "MULTIPLAYER CHOICE",
+            icon: Icons.group_add,
+            // scroll when keyboard shows
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(5),
+              child: MultiplayerChoice(onNext: _nextPage),
+            ),
+          );
+        case 2:
+          return GameSetupContainer(
+            key: const ValueKey('duration'),
+            borderColor: const Color(0xFFE2B96A),
+            title: "SELECT DURATION",
+            icon: Icons.hourglass_top,
+            child: SelectDuration(),
+          );
+        case 3:
+          return GameSetupContainer(
+            key: const ValueKey('char'),
+            borderColor: const Color(0xFF4FC7C0),
+            title: "SELECT CHARACTER",
+            icon: Icons.abc,
+            child: const SelectChar(),
+          );
+        case 4:
+        default:
+          return GameSetupContainer(
+            key: const ValueKey('categories'),
+            borderColor: const Color(0xFF3C90E8),
+            title: "SELECT CATEGORIES",
+            icon: Icons.category,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(10),
+              child: const SelectCategories(),
+            ),
+          );
+      }
+    } else {
+      // SOLO flow (no multiplayer step)
+      switch (index) {
+        case 1:
+          return GameSetupContainer(
+            key: const ValueKey('duration'),
+            borderColor: const Color(0xFFE2B96A),
+            title: "SELECT DURATION",
+            icon: Icons.hourglass_top,
+            child: SelectDuration(),
+          );
+        case 2:
+          return GameSetupContainer(
+            key: const ValueKey('char'),
+            borderColor: const Color(0xFF4FC7C0),
+            title: "SELECT CHARACTER",
+            icon: Icons.abc,
+            child: const SelectChar(),
+          );
+        case 3:
+        default:
+          return GameSetupContainer(
+            key: const ValueKey('categories'),
+            borderColor: const Color(0xFF3C90E8),
+            title: "SELECT CATEGORIES",
+            icon: Icons.category,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(10),
+              child: const SelectCategories(),
+            ),
+          );
+      }
+    }
+  }   
 }
 
 

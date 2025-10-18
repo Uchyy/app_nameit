@@ -152,7 +152,7 @@ class _GamePlayBaseState extends State<GamePlayBase> {
                               readOnly: true, // using custom keyboard
                               decoration: InputDecoration(
                                 labelText: cat,
-                                prefixIcon: Icon(getIconForCategory(cat)),
+                                prefixIcon: Icon(getIconForCategory(cat), color: Color(0xFF8A6FB3)),
                                 border: const OutlineInputBorder(),
                               ),
                               onTap: _revealFocused, // optional, feels nice
@@ -195,7 +195,10 @@ class _GamePlayBaseState extends State<GamePlayBase> {
   }
 
     Future<bool> _showExitDialog(BuildContext context) async {
-    final provider = context.read<GameProvider>();
+    final provider = Provider.of<GameProvider>(context, listen: false);
+    final game = provider.game;
+    final mode = game.mode.toLowerCase();
+
     return await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -219,10 +222,14 @@ class _GamePlayBaseState extends State<GamePlayBase> {
           ),
           ElevatedButton(
             onPressed: () { 
-              provider.resetGame();
+              if (mode == "solo") {
+                provider.resetGame();
+              } else {
+                // remove user from playerIds arrays
+              }
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => nomino()),
+                MaterialPageRoute(builder: (context) => Nomino()),
               );
             },
             child: const Text("Exit"),

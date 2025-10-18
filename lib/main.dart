@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nomino/misc/gradient_text.dart';
+import 'package:nomino/theme.dart';
 import 'package:provider/provider.dart'; 
 
 import './styles/main_button.dart';
@@ -12,66 +14,45 @@ import 'helpers/game_provider.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  FlutterError.onError = (FlutterErrorDetails details) {
-    FlutterError.presentError(details);
-  };
-  ErrorWidget.builder = (FlutterErrorDetails details) {
-    return const SizedBox.shrink();
-  };
-  await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
   runApp(
-      ChangeNotifierProvider(
-        create: (_) => GameProvider(),
-        child: const MyApp(),
-      ),
+    ChangeNotifierProvider(
+      create: (_) => GameProvider(),
+      child: const NominoApp(),
+    ),
   );
 }
 
-/* 
-Color(0xFFEFF1ED) whitesmoke
-Color(0xFF373D20)  dark green
-Color(0xFF717744) green
-Color(0xFFBCBD8B) sage
-Color(0xFF766153) umber brown
-*/
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class NominoApp extends StatelessWidget {
+  const NominoApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, 
-      title: 'Name IT',
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFFEFF1ED),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 132, 116, 160),
-        ),
-      ),
-      home: const nomino(),
+      title: 'Nomino',
+      debugShowCheckedModeBanner: false,
+      theme: NominoTheme.light,
+      home: const Nomino(),
     );
   }
 }
 
-class nomino extends StatefulWidget {
-  const nomino({super.key});
+
+class Nomino extends StatefulWidget {
+  const Nomino({super.key});
 
   @override
-  State<nomino> createState() => nominoState();
+  State<Nomino> createState() => nominoState();
 }
 
-class nominoState extends State<nomino> with TickerProviderStateMixin {
+class nominoState extends State<Nomino> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -89,21 +70,23 @@ class nominoState extends State<nomino> with TickerProviderStateMixin {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   const SizedBox(width: 20.0, height: 100.0),
-                  Text(
+                  GradientText(
                     'nomino',
                     style: TextStyle(
                       fontSize: 60.0,
                       fontFamily: GoogleFonts.modak().fontFamily,
-                      color: const Color(0xFF717744),
+                      color: const Color.fromARGB(255, 196, 204, 138),
                       letterSpacing: 2.0,
                     ),
                     textAlign: TextAlign.left,
                   ),
+                 const SizedBox(height: 20,),
+
                   DefaultTextStyle(
                     style: TextStyle(
                       fontSize: 40.0,
                       fontFamily: GoogleFonts.dancingScript().fontFamily,
-                      color: const Color(0xFF373D20),
+                      color: Theme.of(context).primaryColorDark
                     ),
                     child: AnimatedTextKit(
                       animatedTexts: [
@@ -120,7 +103,7 @@ class nominoState extends State<nomino> with TickerProviderStateMixin {
 
               const SizedBox(height: 45.0),
               ElevatedButton(
-                style: elevatedButtonStyle(),
+                style: elevatedButtonStyle(context),
                 onPressed: () {
                   Navigator.of(context).push(PageRouteBuilder(
                     opaque: false,
@@ -130,9 +113,9 @@ class nominoState extends State<nomino> with TickerProviderStateMixin {
                 child: const Text('PLAY'),
               ),
 
-              const SizedBox(height: 15.0),
+              const SizedBox(height: 25.0),
               ElevatedButton(
-                style: elevatedButtonStyle(),
+                style: elevatedButtonStyle(context),
                 onPressed: () {
                   Navigator.push(
                     context,

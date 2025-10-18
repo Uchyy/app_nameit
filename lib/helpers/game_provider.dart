@@ -3,11 +3,24 @@ import 'package:nomino/model/game_vars.dart';
 import 'package:flutter/material.dart';
 
 class GameProvider extends ChangeNotifier {
-   Game _game = Game(categories: getCategories());
+  Game _game = Game(categories: getCategories());
   Game get game => _game;
+
+  bool isJoining = false;
+  String joinCode = "";
 
   void setMode(String mode) {
     _game.mode = mode;
+    notifyListeners();
+  }
+
+  void setIsJoining(bool value) {
+    isJoining = value;
+    notifyListeners();
+  }
+
+  void setJoinCode(String code) {
+    joinCode = code;
     notifyListeners();
   }
 

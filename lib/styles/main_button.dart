@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-ButtonStyle elevatedButtonStyle() {
+ButtonStyle elevatedButtonStyle(BuildContext context) {
    return  ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF717744),
+                backgroundColor: Theme.of(context).primaryColor,
                 foregroundColor: Color(0xFFEFF1ED),
                 padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 15.0),
                 textStyle: TextStyle(
