@@ -5,7 +5,6 @@ import 'package:nomino/helpers/validate_code.dart';
 import 'package:nomino/misc/custom_snackbar.dart';
 import 'package:nomino/misc/page_loading.dart';
 import 'package:nomino/service/store_impl.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

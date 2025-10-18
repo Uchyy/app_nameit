@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:nomino/account/main.dart';
 import 'package:nomino/game_play/solo/solo_screen.dart';
 import 'package:nomino/helpers/validate_code.dart';
-import 'package:nomino/misc/custom_snackbar.dart';
 import 'package:nomino/misc/page_loading.dart';
 import 'package:nomino/game_play/multiplay/waiting_room.dart';
 import 'package:nomino/helpers/generate_game_code.dart';
